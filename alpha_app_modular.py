@@ -62,7 +62,7 @@ if 'df_clean_data' not in st.session_state:
 
 # cover image
 enlace_img="https://raw.githubusercontent.com/Uplyuz/PolarWeb/af24864c44ed44e486a19ce6c01b7cf1078899bd/.streamlit/images/portrait.PNG"
-st.image(enlace_img) 
+st.image(enlace_img, use_column_width=True) 
 # header
 st.header("Your Personalized X-Sentiment Analysis")
 
