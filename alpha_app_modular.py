@@ -61,8 +61,8 @@ if 'df_clean_data' not in st.session_state:
     st.session_state.df_clean_data = None
 
 # cover image
-enlace_img="https://github.com/Uplyuz/PolarWeb/blob/af24864c44ed44e486a19ce6c01b7cf1078899bd/.streamlit/images/portrait.PNG"
-st.image(enlace_img, use_column_width=True) 
+enlace_img="https://github.com/Uplyuz/PolarWeb/blob/af24864c44ed44e486a19ce6c01b7cf1078899bd/.streamlit/images/portrait.
+st.image(enlace_img) 
 # header
 st.header("Your Personalized X-Sentiment Analysis")
 
