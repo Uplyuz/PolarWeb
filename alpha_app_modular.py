@@ -205,7 +205,7 @@ with tab3:
         import sys
         import os
         # Add the parent directory to sys.path (one level up)
-        sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'agus_temporal')))
+        # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'agus_temporal')))
         # Now you can import from dashboard_charts.py
         from dashboard_charts import plot_wordcloud
         st.write(df_clean_data.head())
