@@ -20,8 +20,8 @@ def plot_wordcloud(df):
         .generate(negative_words)
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(18, 9), facecolor=None)  # Changed to 2 rows, 1 column
-    ax1.imshow(wordcloud_positive, interpolation='bilinear')
-    ax2.imshow(wordcloud_negative, interpolation='bilinear')
+    ax1.imshow(wordcloud, interpolation='bilinear')
+    ax2.imshow(wordcloud2, interpolation='bilinear')
     ax1.set_title('Positive Tweets', fontsize=20)
     ax2.set_title('Negative Tweets', fontsize=20)
     ax1.axis("off")
