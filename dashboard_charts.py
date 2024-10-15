@@ -28,3 +28,19 @@ def plot_wordcloud(df):
     fig.tight_layout()
     
     st.pyplot(fig)  # Esta línea debe quedar al final para mostrar el gráfico en Streamlit
+    
+
+def sentiment_dist(df):
+    if 'Tweet' not in df.columns or 'Sentiment' not in df.columns:
+        st.error("the Dataframe's structure is not correct.")
+        return
+    
+    sentiment_counts = df['Sentiment'].value_counts()
+    sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values)
+    plt.title('Sentiment Distribution')
+    plt.xlabel('Sentiment')
+    plt.ylabel('Number of Tweets')
+    
+    st.pyplot(fig)
+
+

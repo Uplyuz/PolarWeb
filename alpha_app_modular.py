@@ -202,8 +202,9 @@ with tab3:
         # Add the parent directory to sys.path (one level up)
         # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'agus_temporal')))
         # Now you can import from dashboard_charts.py
-        from dashboard_charts import plot_wordcloud
+        from dashboard_charts import plot_wordcloud, sentiment_dist
         st.dataframe(df_clean_data)
+        sentiment_dist(df_clean_data)
         plot_wordcloud(df_clean_data)
         
         # Additional insights
