@@ -190,11 +190,6 @@ with tab3:
     if st.session_state.search_done:
         # Performing sentiment analysis on the cleaned data
         # here go results from sentiment analysis, and delete this step code lines
-        import numpy as np
-        df_clean_data['Sentiment'] = np.random.choice([0, 1], size=len(df_clean_data))
-        
-        # AGUS ---------------------------------------------------------------------------------------------------------------------------------------------
-        
         # Next steps, from now on, the code is to keep
         # Displaying sentiment analysis results
         st.write("Sentiment Analysis Results:")
@@ -208,7 +203,7 @@ with tab3:
         # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'agus_temporal')))
         # Now you can import from dashboard_charts.py
         from dashboard_charts import plot_wordcloud
-        st.write(df_clean_data.head())
+        st.dataframe(df_clean_data)
         plot_wordcloud(df_clean_data)
         
         # Additional insights
