@@ -193,17 +193,15 @@ with tab3:
         # Next steps, from now on, the code is to keep
         # Displaying sentiment analysis results
         st.write("Sentiment Analysis Results:")
-        sentiment_counts = df_clean_data['Sentiment'].value_counts()
-        st.bar_chart(sentiment_counts)  # Displaying a bar chart of sentiments
-        
-        # wordcloud charts (positive and negative sentiments).
-        import sys
-        import os
+        #import sys
+        #import os
         # Add the parent directory to sys.path (one level up)
         # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'agus_temporal')))
-        # Now you can import from dashboard_charts.py
+        
         from dashboard_charts import plot_wordcloud, sentiment_dist
+        
         st.dataframe(df_clean_data)
+        # wordcloud charts (positive and negative sentiments).
         sentiment_dist(df_clean_data)
         plot_wordcloud(df_clean_data)
         
