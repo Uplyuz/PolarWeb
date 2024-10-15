@@ -19,16 +19,16 @@ def plot_wordcloud(df):
     wordcloud2 = WordCloud(width=875, height=900, background_color="black", max_words=50, min_font_size=20, random_state=42)\
         .generate(negative_words)
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(18, 9), facecolor=None)
-    ax1.imshow(wordcloud, interpolation='bilinear')
-    ax2.imshow(wordcloud2, interpolation='bilinear')
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(18, 9), facecolor=None)  # Changed to 2 rows, 1 column
+    ax1.imshow(wordcloud_positive, interpolation='bilinear')
+    ax2.imshow(wordcloud_negative, interpolation='bilinear')
     ax1.set_title('Positive Tweets', fontsize=20)
     ax2.set_title('Negative Tweets', fontsize=20)
     ax1.axis("off")
     ax2.axis("off")
     fig.tight_layout()
     
-    st.pyplot(fig)  # Esta línea debe quedar al final para mostrar el gráfico en Streamlit
+    st.pyplot(fig)  # don't take this out
     
 
 def sentiment_dist(df):
