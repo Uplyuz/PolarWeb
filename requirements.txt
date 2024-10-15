@@ -6,4 +6,4 @@ wordcloud
 deep-translator
 torch
 transformers
-searborn
+seaborn

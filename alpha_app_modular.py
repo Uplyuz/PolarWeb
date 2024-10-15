@@ -146,6 +146,27 @@ with tab1:
 # ----------------------------------------------------------------------------------------------------------------------------------------------------
 # df_clean_data['Translated_Tweet']=df_clean_data['Tweet'].apply(traducir) a borrar si funciona
 
+# ALE ------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Applying the model in  Streamlit
+if st.session_state.search_done and model_custom is not None:
+    df_clean_data = st.session_state.df_clean_data
+
+    # Ensure DataFrame exists and has content before analysis
+    if df_clean_data is not None and not df_clean_data.empty:
+        # Analyze sentiments using the loaded model
+        df_clean_data = analyze_sentiments(model_custom, tokenizer_custom, df_clean_data)
+        
+        # Update the session state with the new DataFrame
+        st.session_state.df_clean_data = df_clean_data
+        
+        # Refresh display after adding sentiment analysis
+        #st.write("Sentiment Analysis Completed:")
+        #st.write(st.session_state.df_clean_data.head())
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 # tab2: displaying the full dataset and giving the opportunity to download it, not much else
 with tab2:
@@ -162,26 +183,6 @@ with tab2:
         pass
 
 
-# ALE ------------------------------------------------------------------------------------------------------------------------------------------------
-
-# Applying the model in  Streamlit
-if st.session_state.search_done and model_custom is not None:
-    df_clean_data = st.session_state.df_clean_data
-
-    # Ensure DataFrame exists and has content before analysis
-    if df_clean_data is not None and not df_clean_data.empty:
-        # Analyze sentiments using the loaded model
-        df_clean_data = analyze_sentiments(model_custom, tokenizer_custom, df_clean_data)
-        
-        # Update the session state with the new DataFrame
-        st.session_state.df_clean_data = df_clean_data
-        
-        # Refresh display after adding sentiment analysis
-        st.write("Sentiment Analysis Completed:")
-        st.write(st.session_state.df_clean_data.head())
-
-
-# ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 # tab3: Analysing data
@@ -194,24 +195,15 @@ with tab3:
         # Next steps, from now on, the code is to keep
         # Displaying sentiment analysis results
         st.write("Sentiment Analysis Results:")
-        #import sys
-        #import os
-        # Add the parent directory to sys.path (one level up)
-        # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'agus_temporal')))
         
         from dashboard_charts import plot_wordcloud, sentiment_dist
-        
-        st.dataframe(df_clean_data)
         # wordcloud charts (positive and negative sentiments).
         sentiment_dist(df_clean_data)
-        plot_wordcloud(df_clean_data)
-        
-        # Additional insights
         total_tweets = len(df_clean_data)
         total_likes = df_clean_data['Tweet_Likes'].sum()
         st.write(f"Total Tweets Analyzed: {total_tweets}")
-        st.write(f"Sentiment Breakdown: {sentiment_counts.to_dict()}")
         st.write(f"Total Likes on Tweets: {total_likes}")
-                
+        plot_wordcloud(df_clean_data)
+            
     else:
         st.warning('Perform a search in tab "Set-up your Search" to get a personalized data analysis.')

@@ -10,8 +10,8 @@ def plot_wordcloud(df):
         st.error("the Dataframe's structure is not correct.")
         return
     
-    positive_words = " ".join(df['Tweet'][df['Sentiment'] == 1])
-    negative_words = " ".join(df['Tweet'][df['Sentiment'] == 0])
+    positive_words = " ".join(df['Tweet'][df['Sentiment'] == 'Positive'])
+    negative_words = " ".join(df['Tweet'][df['Sentiment'] == 'Negative'])
 
     wordcloud = WordCloud(width=875, height=900, background_color="black", max_words=50, min_font_size=20, random_state=42)\
         .generate(positive_words)
@@ -37,11 +37,11 @@ def sentiment_dist(df):
         return
     
     sentiment_counts = df['Sentiment'].value_counts()
-    sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values)
+    plt.figure(figsize=(5, 3))  
+    colors = ['green' if sentiment == 'Positive' else 'red' for sentiment in sentiment_counts.index]
+    sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values, palette=colors)
     plt.title('Sentiment Distribution')
     plt.xlabel('Sentiment')
     plt.ylabel('Number of Tweets')
-    
-    st.pyplot(fig)
-
-
+    st.pyplot(plt, use_container_width=True)  
+    plt.clf()  
