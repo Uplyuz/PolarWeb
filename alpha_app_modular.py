@@ -197,7 +197,7 @@ with tab3:
         st.write("Sentiment Analysis Results:")
         
         from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary
-        aux_01 = format_data_model_output(df_clean_data) #chequear
+        aux_01 = format_data_model_output(df_clean_data) #chequear linea 208 y esta
         st.write(aux_01) #chequear
         sentiment_dist(df_clean_data)
         total_tweets = len(df_clean_data)
@@ -205,7 +205,7 @@ with tab3:
         st.write(f"Total Tweets Analyzed: {total_tweets}")
         st.write(f"Total Likes on Tweets: {total_likes}")
         plot_wordcloud(df_clean_data)
-        st.write(obtain_summary(df_clean_data)) #chequear
+        #st.write(obtain_summary(df_clean_data)) #chequear
             
     else:
         st.warning('Perform a search in tab "Set-up your Search" to get a personalized data analysis.')
