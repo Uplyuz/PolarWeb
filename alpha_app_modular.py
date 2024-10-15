@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 from translate_API_output import traducir, traducir_tweets
 import matplotlib.pyplot as plt
+import seaborn as sns
 from wordcloud import WordCloud
 from deep_translator import GoogleTranslator
 

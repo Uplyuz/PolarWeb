@@ -1,4 +1,5 @@
 import pandas as pd
+import seaborn as sns
 import streamlit as st  # Agregar esta línea
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
