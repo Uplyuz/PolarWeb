@@ -14,7 +14,7 @@ def traducir(text):
         return text
     
 def traducir_tweets(df):
-   
+
     # Asegúrate de que la columna 'tweets' existe
     if 'Tweet' in df.columns:
         df['Translated_tweet'] = df['Tweet'].apply(traducir)

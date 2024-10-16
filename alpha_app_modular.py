@@ -119,6 +119,8 @@ with tab1:
                 # converting the cleaned data into a DataFrame
                 df_clean_data = pd.DataFrame(clean_data, columns=['Date', 'Tweet', 'Tweet_Likes'])
                 df_clean_data['Tweet']=df_clean_data['Tweet'].apply(traducir)
+                df_clean_data = df_clean_data.dropna(subset=['Tweet'])
+                df_clean_data = df_clean_data[df_clean_data['Tweet'].str.strip().astype(bool)]
                 st.session_state.df_clean_data=df_clean_data
 
             except Exception as e:
