@@ -47,6 +47,14 @@ def sentiment_dist(df):
     plt.clf()  
     
 
+def likes_over_words_amount(df):
+    plt.figure(figsize=(10, 6))
+    plt.scatter(df['Words_count'], df['Tweet_Likes'], alpha=0.5, color='green')
+    plt.title('Relationship Between Words in Tweets and Likes')
+    plt.xlabel('Amount of words')
+    plt.ylabel('Likes')
+    plt.show()
+
 def format_data_model_output(df):
     df_clean_data = df.copy()
     if 'Unnamed: 0' in df_clean_data.columns:
@@ -54,6 +62,7 @@ def format_data_model_output(df):
     df_clean_data['Date'] = pd.to_datetime(df_clean_data['Date'])
     df_clean_data['Year'] = df_clean_data['Date'].dt.year
     df_clean_data['Month'] = df_clean_data['Date'].dt.month
+    df_clean_data['Week'] = df_clean_data['Date'].dt.isocalendar().week
     df_clean_data['Date'] = df_clean_data['Date'].dt.date
     df_clean_data['Words_count'] = df_clean_data['Tweet'].str.split().apply(len)
     return df_clean_data
