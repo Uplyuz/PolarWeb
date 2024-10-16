@@ -90,7 +90,7 @@ with tab1:
     num_tweets = st.slider("Select the number of tweets to retrieve", 100, 1000, step=50)
     st.write(' ')
     option = st.radio('Tweet options', 
-                   ('Latest', 'Top', 'Others'), 
+                   ('Latest', 'Top'), 
                     index=0, 
                     key='option', horizontal=True)
     st.write(' ')
