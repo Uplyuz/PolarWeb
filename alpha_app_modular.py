@@ -2,12 +2,12 @@
 import streamlit as st
 import requests
 import pandas as pd
-from translate_API_output import traducir, traducir_tweets
+from translate_API_output import traducir, traducir_tweets, preprocess_tweet
 import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
 from deep_translator import GoogleTranslator
-
+import re
 import streamlit as st
 import torch
 from transformers import RobertaTokenizer
@@ -118,9 +118,12 @@ with tab1:
 
                 # converting the cleaned data into a DataFrame
                 df_clean_data = pd.DataFrame(clean_data, columns=['Date', 'Tweet', 'Tweet_Likes'])
+                aux_101=preprocess_tweet(df_clean_data) ###################################
+                st.write(aux_101) ##############################################
                 df_clean_data['Tweet']=df_clean_data['Tweet'].apply(traducir)
                 df_clean_data = df_clean_data.dropna(subset=['Tweet'])
                 df_clean_data = df_clean_data[df_clean_data['Tweet'].str.strip().astype(bool)]
+                st.write(df_clean_data)
                 st.session_state.df_clean_data=df_clean_data
 
             except Exception as e:

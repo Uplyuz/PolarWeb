@@ -1,4 +1,5 @@
 from deep_translator import GoogleTranslator
+import re
 #df_prueba_roberta.rename(columns={'sentiment': 'tweets'}, inplace=True)
 
 def traducir(text):
@@ -23,3 +24,11 @@ def traducir_tweets(df):
     return df
 
 # df_prueba_roberta['tweets_traducidos'] = df_prueba_roberta['tweets'].apply(traducir)
+
+
+def preprocess_tweet(df):
+    df['Tweet'] = df['Tweet'].apply(lambda x: re.sub(r'http\S+|www\S+|https\S+', '', x))  # delete URLs
+    df['Tweet'] = df['Tweet'].apply(lambda x: re.sub(r'@\w+', '', x))  # delete mentions
+    #df['Tweet'] = df['Tweet'].apply(lambda x: re.sub(r'#\w+', '', x))  # delete hashtags
+    df_clean_data = df.copy()
+    return df_clean_data
