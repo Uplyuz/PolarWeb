@@ -53,7 +53,8 @@ def likes_over_words_amount(df):
     plt.title('Relationship Between Words in Tweets and Likes')
     plt.xlabel('Amount of words')
     plt.ylabel('Likes')
-    plt.show()
+    st.pyplot(plt, use_container_width=True)  
+    plt.clf() 
 
 def format_data_model_output(df):
     df_clean_data = df.copy()
