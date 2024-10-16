@@ -106,7 +106,7 @@ with tab1:
             st.session_state.search_done = True  # successful search
             # to pass the keyword to the API as the search phrase
             user_search_phrase = keyword  # User input from the search box
-            querystring = {"query": user_search_phrase, "section": 'latest', "limit": "20"}  # Default filters (to be connected later with the st.slider and the st.radio)
+            querystring = {"query": user_search_phrase, "section": option, "limit": num_tweets}  # Default filters (to be connected later with the st.slider and the st.radio)
             # calling the API
             try:
                 response_api_01 = requests.get(url_tweets_search_api_01, headers=headers, params=querystring)
@@ -132,9 +132,9 @@ with tab1:
         # Check dataframe not none and empty
         if df_clean_data is not None and not df_clean_data.empty:
             if keyword.strip():
-                st.write(f'Here you have a sample of your "{keyword}" tweets search')
+                #st.write(f'Here you have a sample of your "{keyword}" tweets search')
                 #st.write(df_clean_data.head(5))
-                st.write(' ')
+                #st.write(' ')
                 st.write(f"To view the complete results of <{num_tweets}> tweets search based on the option <{option}>, please go to the 'Get Data' tab placed on header.")
                 st.write(' ')
                 st.write("If you are looking for a comprehensive data analysis of this results, please go to the 'Get Analysis' tab placed on header.")
