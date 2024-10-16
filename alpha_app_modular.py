@@ -106,7 +106,7 @@ with tab1:
             st.session_state.search_done = True  # successful search
             # to pass the keyword to the API as the search phrase
             user_search_phrase = keyword  # User input from the search box
-            querystring = {"query": user_search_phrase, "section": 'Latest', "limit": '20'}  # Default filters (to be connected later with the st.slider and the st.radio)
+            querystring = {"query": user_search_phrase, "section": option.lower(), "limit": '20'}  # Default filters (to be connected later with the st.slider and the st.radio)
             # calling the API
             try:
                 response_api_01 = requests.get(url_tweets_search_api_01, headers=headers, params=querystring)
