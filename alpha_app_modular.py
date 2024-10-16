@@ -207,7 +207,7 @@ with tab3:
         st.write(f"Total Tweets Analyzed: {total_tweets}")
         st.write(f"Total Likes on Tweets: {total_likes}")
         plot_wordcloud(df_clean_data)
-        aux_02 = obtain_summary(df_clean_data) #chequear
+        aux_02 = obtain_summary(aux_01) #chequear
         st.writ(aux_02)    
     else:
         st.warning('Perform a search in tab "Set-up your Search" to get a personalized data analysis.')
