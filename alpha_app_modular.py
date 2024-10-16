@@ -118,12 +118,10 @@ with tab1:
 
                 # converting the cleaned data into a DataFrame
                 df_clean_data = pd.DataFrame(clean_data, columns=['Date', 'Tweet', 'Tweet_Likes'])
-                aux_101=preprocess_tweet(df_clean_data) ###################################
-                st.write(aux_101) ##############################################
+                df_clean_data = preprocess_tweet(df_clean_data) 
                 df_clean_data['Tweet']=df_clean_data['Tweet'].apply(traducir)
                 df_clean_data = df_clean_data.dropna(subset=['Tweet'])
                 df_clean_data = df_clean_data[df_clean_data['Tweet'].str.strip().astype(bool)]
-                st.write(df_clean_data)
                 st.session_state.df_clean_data=df_clean_data
 
             except Exception as e:
@@ -209,7 +207,7 @@ with tab3:
         total_likes = df_clean_data['Tweet_Likes'].sum()
         st.write(f"Total Tweets Analyzed: {total_tweets}")
         st.write(f"Total Likes on Tweets: {total_likes}")
-        plot_wordcloud(df_clean_data)
+        plot_wordcloud(df_clean_data, keyword)
         likes_over_words_amount(aux_01)
         aux_02 = obtain_summary(aux_01) #chequear
         st.write(f"Summary: ")

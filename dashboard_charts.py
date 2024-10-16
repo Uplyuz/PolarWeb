@@ -3,15 +3,26 @@ import seaborn as sns
 import streamlit as st  # Agregar esta línea
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
+import re
 
 # cloud charts (positive and negative sentiments)
-def plot_wordcloud(df):
+def plot_wordcloud(df, keyword):
     if 'Tweet' not in df.columns or 'Sentiment' not in df.columns:
-        st.error("the Dataframe's structure is not correct.")
+        st.error("The Dataframe's structure is not correct.")
         return
     
+    # taking out the keyword of principal search
+    def remove_keyword(text, keyword):
+        pattern = re.compile(re.escape(keyword), re.IGNORECASE)
+        return pattern.sub('', text)
+
+    # Filtra las palabras positivas y negativas
     positive_words = " ".join(df['Tweet'][df['Sentiment'] == 'Positive'])
     negative_words = " ".join(df['Tweet'][df['Sentiment'] == 'Negative'])
+    
+    # Elimina la palabra clave ingresada por el usuario de los textos
+    positive_words = remove_keyword(positive_words, keyword)
+    negative_words = remove_keyword(negative_words, keyword)
 
     wordcloud = WordCloud(width=875, height=900, background_color="lightgrey", max_words=50, min_font_size=20, random_state=42)\
         .generate(positive_words)
