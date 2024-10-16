@@ -65,23 +65,15 @@ if 'df_clean_data' not in st.session_state:
 enlace_img="https://raw.githubusercontent.com/Uplyuz/PolarWeb/refs/heads/main/.streamlit/images/portrait.jpg"
 st.image(enlace_img, use_column_width=True) 
 # header
-st.header("Your Personalized X-Sentiment Analysis")
+st.markdown("<p style='text-align: center; font-size:24px; font-monocode: bold;'>Tailored Sentiment Analysis at Your Fingertips</p>", unsafe_allow_html=True)
 
 # to create all tabs once
 tab1, tab2, tab3 = st.tabs(["Set-up your Search", "Get Data", "Get Analysis"])
 
 # tab1: search config
 with tab1:
-    st.subheader("Set up your own personalized search")
+    st.markdown("<p style='text-align: center; font-size:20px; font-monocode: bold;'>Set up your search</p>", unsafe_allow_html=True)
     # to show disclaimer
-    st.markdown(
-        """
-        <div style="background-color: rgba(247, 230, 202, 0.8); color: #53463a; padding: 3px; border-radius: 1px; font-size: 11px;">
-            ⚠️ This app uses a beta version pretrained model for sentiment analysis and may produce inaccurate results.
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
     st.write('''
              
              ''')
@@ -127,6 +119,15 @@ with tab1:
             except Exception as e:
                 st.error(f"An error occurred: {e}")
                 
+    st.markdown(
+        """
+        <div style="color: rgba(94, 255, 75, 0.8); font-size: 11px; font-family: monospace;">
+        ⚠️ This app uses a roBERTa fine tuned model, it may produce inaccurate results.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+            
     # to display results if search was successful
     if st.session_state.search_done:
         df_clean_data=st.session_state.df_clean_data
@@ -134,7 +135,7 @@ with tab1:
         if df_clean_data is not None and not df_clean_data.empty:
             if keyword.strip():
                 #st.write(f'Here you have a sample of your "{keyword}" tweets search')
-                st.write(df_clean_data.head(5))
+                #st.write(df_clean_data.head(5))
                 #st.write(' ')
                 st.write(f"To view the complete results of <{num_tweets}> tweets search based on the option <{option}>, please go to the 'Get Data' tab placed on header.")
                 st.write(' ')
