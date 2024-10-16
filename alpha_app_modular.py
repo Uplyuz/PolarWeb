@@ -106,7 +106,7 @@ with tab1:
             st.session_state.search_done = True  # successful search
             # to pass the keyword to the API as the search phrase
             user_search_phrase = keyword  # User input from the search box
-            querystring = {"query": user_search_phrase, "section": 'latest', "limit": "100"}  # Default filters (to be connected later with the st.slider and the st.radio)
+            querystring = {"query": user_search_phrase, "section": 'latest', "limit": "20"}  # Default filters (to be connected later with the st.slider and the st.radio)
             # calling the API
             try:
                 response_api_01 = requests.get(url_tweets_search_api_01, headers=headers, params=querystring)
@@ -208,7 +208,7 @@ with tab3:
         st.write(f"Total Likes on Tweets: {total_likes}")
         plot_wordcloud(df_clean_data)
         aux_02 = obtain_summary(aux_01) #chequear
-        st.write(f"Summary:")
+        st.write(f"Summary: ")
         st.write(aux_02)    
     else:
         st.warning('Perform a search in tab "Set-up your Search" to get a personalized data analysis.')
