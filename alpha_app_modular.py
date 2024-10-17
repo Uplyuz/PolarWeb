@@ -14,6 +14,7 @@ import torch
 from transformers import RobertaTokenizer
 from custom_class_final_model import CustomRobertaModel
 from model_load_apply import load_custom_sentiment_model, predict_sentiment, analyze_sentiments
+from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly, create_banner
 import plotly.graph_objects as go
 from PIL import Image
 import numpy as np
@@ -147,14 +148,6 @@ with tab1:
             st.warning("No tweets were found for the current search.")
         
 
-# LUIS -----------------------------------------------------------------------------------------------------------------------------------------------
-# Recibis un dataset con df_clean_data[index, 'Date', 'Tweet', 'Tweet_Likes'] y das como output df_clean_data[index, 'Date', 'Tweet', 'Tweet_Likes'] 
-# con la columna 'Tweet' ya con todo traducido
-# ----------------------------------------------------------------------------------------------------------------------------------------------------
-# df_clean_data['Translated_Tweet']=df_clean_data['Tweet'].apply(traducir) a borrar si funciona
-
-# ALE ------------------------------------------------------------------------------------------------------------------------------------------------
-
 # Applying the model in  Streamlit
 if st.session_state.search_done and model_custom is not None:
     df_clean_data = st.session_state.df_clean_data
@@ -172,9 +165,6 @@ if st.session_state.search_done and model_custom is not None:
         #st.write(st.session_state.df_clean_data.head())
 
 
-# ----------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 # tab2: displaying the full dataset and giving the opportunity to download it, not much else
 with tab2:
     st.subheader("Data Retrieved")
@@ -182,7 +172,8 @@ with tab2:
         df_clean_data=st.session_state.df_clean_data
         if df_clean_data is not None and not df_clean_data.empty:
             st.write("If you need, here you can download the full data results...")
-            st.write(df_clean_data)
+            aux_01 = format_data_model_output(df_clean_data) #chequear linea 208 y esta
+            st.write(aux_01)
             st.write(" ")
             st.write("If you are looking for a comprehensive data analysis of this results, please go to the 'Get Analysis' tab placed on header.")
     else:
@@ -202,12 +193,7 @@ with tab3:
         # Next steps, from now on, the code is to keep
         # Displaying sentiment analysis results
         st.write("Sentiment Analysis Results:")
-        
-        from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly, create_banner
-        aux_01 = format_data_model_output(df_clean_data) #chequear linea 208 y esta
-        st.write(aux_01) #chequear
         aux_02 = obtain_summary(aux_01) #chequear
-        aux_02 = pd.DataFrame(aux_02)
         create_banner(aux_01)
         sentiment_dist_plotly(df_clean_data)
         total_tweets = len(df_clean_data)
