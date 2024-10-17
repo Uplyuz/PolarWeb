@@ -81,7 +81,7 @@ with tab1:
     st.write('''
              
              ''')
-    keyword = st.text_input("Enter a keyword to search tweets:", "Lebron")
+    keyword = st.text_input("Enter a keyword to search tweets:", "ONU")
     st.write(' ')
     num_tweets = st.slider("Select the number of tweets to retrieve", 20, 100, step=10)
     st.write(' ')
