@@ -18,20 +18,6 @@ import plotly.graph_objects as go
 from PIL import Image
 import numpy as np
 
-# To fix the tab headr
-st.markdown("""
-    <style>
-    /* Sticky tabs header */
-    div[data-testid="stHorizontalBlock"] {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0;
-        z-index: 999;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-
 
 # API configuration
 url_tweets_search_api_01 = "https://twitter-x.p.rapidapi.com/search/"
