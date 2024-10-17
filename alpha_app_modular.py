@@ -25,9 +25,6 @@ st.markdown("""
         position: -webkit-sticky;
         position: sticky;
         top: 0;
-        background-color: white;
-        z-index: 999;
-        border-bottom: 2px solid black;
     }
     </style>
     """, unsafe_allow_html=True)
