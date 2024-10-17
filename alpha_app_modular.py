@@ -208,8 +208,7 @@ with tab3:
         st.write(aux_01) #chequear
         aux_02 = obtain_summary(aux_01) #chequear
         aux_02 = pd.DataFrame(aux_02)
-        st.write(aux_02)  
-        create_banner(aux_02)
+        create_banner(aux_01)
         sentiment_dist_plotly(df_clean_data)
         total_tweets = len(df_clean_data)
         total_likes = df_clean_data['Tweet_Likes'].sum()
