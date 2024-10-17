@@ -186,16 +186,21 @@ def sentiment_dist_plotly(df):
 
 
 def create_banner(aux_02):
-    # Create individual metrics for each column from aux_02
-    date_text = f"Tweets on {aux_02['Date'].max().strftime('%Y-%m-%d')}"
+    # Ensure aux_02 is a DataFrame and not None
+    if aux_02 is None or aux_02.empty:
+        st.error("Data is not available.")
+        return
+
+    # Get metrics from aux_02 DataFrame
+    latest_date = aux_02['Date'].max().strftime('%Y-%m-%d')
     total_tweets = aux_02['tweets_count'].sum()
     avg_word_count = aux_02['Average_word_count'].mean()
     positive_ratio = aux_02['Positive_ratio'].mean()
 
-    # Create Plotly cards for each metric
+    # Create Plotly cards (indicators) for each metric
     fig = go.Figure()
 
-    # First metric: Total Tweets
+    # Total Tweets
     fig.add_trace(go.Indicator(
         mode="number",
         value=total_tweets,
@@ -204,7 +209,7 @@ def create_banner(aux_02):
         number={'font': {'size': 50}}
     ))
 
-    # Second metric: Average Words per Tweet
+    # Average Words per Tweet
     fig.add_trace(go.Indicator(
         mode="number",
         value=avg_word_count,
@@ -213,7 +218,7 @@ def create_banner(aux_02):
         number={'font': {'size': 50}}
     ))
 
-    # Third metric: Positive Sentiment Ratio
+    # Positive Sentiment Ratio
     fig.add_trace(go.Indicator(
         mode="number+gauge",
         value=positive_ratio,
@@ -223,25 +228,31 @@ def create_banner(aux_02):
         number={'font': {'size': 50}},
     ))
 
-    # Fourth metric: Latest Date (formatted differently)
+    # Latest Date
     fig.add_trace(go.Indicator(
         mode="number",
         value=aux_02['Date'].max().day,
-        title={"text": f"<b>Latest Date</b><br>{aux_02['Date'].max().strftime('%Y-%m-%d')}"},
+        title={"text": f"<b>Latest Date</b><br>{latest_date}"},
         domain={'x': [0.6, 0.8], 'y': [0, 1]},
         number={'font': {'size': 50}}
     ))
 
-    # Fifth metric: Placeholder or any other metric you'd like
+    # Total Rows/Records
     fig.add_trace(go.Indicator(
         mode="number",
-        value=aux_02['Positive_ratio'].count(),
+        value=len(aux_02),
         title={"text": "<b>Records</b><br>In DataFrame"},
         domain={'x': [0.8, 1], 'y': [0, 1]},
         number={'font': {'size': 50}},
     ))
 
-    # Update layout to make the panel responsive and attractive
+    # Update layout for a professional look
     fig.update_layout(
         grid={'rows': 1, 'columns': 5, 'pattern': "independent"},
-        template={'layout': {'paper_bgcolor': 'rgb
+        template='plotly_dark',
+        height=300,
+        margin=dict(l=20, r=20, t=50, b=50),
+    )
+
+    # Display the figure in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
