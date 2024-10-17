@@ -141,9 +141,8 @@ with tab1:
                 #st.write(f'Here you have a sample of your "{keyword}" tweets search')
                 #st.write(df_clean_data.head(5))
                 #st.write(' ')
-                st.write(f"To view the complete results of <{num_tweets}> tweets search based on the option <{option}>, please go to the 'Get Data' tab placed on header.")
-                st.write(' ')
-                st.write("If you are looking for a comprehensive data analysis of this results, please go to the 'Get Analysis' tab placed on header.")
+                st.success("Task completed! Please proceed to the 'Get Data' tab for raw data, or the 'Get Analysis' tab for a quick analysis of your results.")
+                
         else:
             st.warning("No tweets were found for the current search.")
         
