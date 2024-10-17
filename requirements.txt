@@ -8,5 +8,5 @@ torch
 transformers
 seaborn
 plotly
-PIL
+Pillow
 numpy
