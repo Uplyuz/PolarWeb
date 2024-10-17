@@ -103,8 +103,6 @@ with tab1:
             try:
                 response_api_01 = requests.get(url_tweets_search_api_01, headers=headers, params=querystring)
                 response_api_01.raise_for_status()
-                entries_api_01 = response_api_01.json()
-                st.write(entries_api_01)
                 entries_api_01 = response_api_01.json()['data']['search_by_raw_query']['search_timeline']['timeline']['instructions'][0]['entries']
 
              # cleanning the API response data
