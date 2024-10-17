@@ -29,8 +29,8 @@ def plot_wordcloud(df, keyword):
     negative_words = remove_keyword(negative_words, keyword)
 
     # Generate word clouds for positive and negative words
-    wordcloud_positive = WordCloud(width=800, height=400, background_color="white").generate(positive_words)
-    wordcloud_negative = WordCloud(width=800, height=400, background_color="white").generate(negative_words)
+    wordcloud_positive = WordCloud(width=800, height=400, background_color="gray").generate(positive_words)
+    wordcloud_negative = WordCloud(width=800, height=400, background_color="darkblue").generate(negative_words)
     
     # Convert word clouds to images
     wordcloud_positive_image = wordcloud_positive.to_image()
