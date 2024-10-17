@@ -14,7 +14,9 @@ import torch
 from transformers import RobertaTokenizer
 from custom_class_final_model import CustomRobertaModel
 from model_load_apply import load_custom_sentiment_model, predict_sentiment, analyze_sentiments
-
+import plotly.graph_objects as go
+from PIL import Image
+import numpy as np
 
 # API configuration
 url_tweets_search_api_01 = "https://twitter-x.p.rapidapi.com/search/"

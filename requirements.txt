@@ -8,3 +8,6 @@ torch
 transformers
 seaborn
 plotly.express
+plotly.graph_objects
+PIL
+numpy
