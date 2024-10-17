@@ -5,42 +5,64 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import re
 import plotly.express as px
+import plotly.graph_objects as go
+from PIL import Image
+import numpy as np
 
-# cloud charts (positive and negative sentiments)
+
+# cloud charts (positive and negative sentiments) using Plotly
 def plot_wordcloud(df, keyword):
     if 'Tweet' not in df.columns or 'Sentiment' not in df.columns:
         st.error("The Dataframe's structure is not correct.")
         return
     
-    # taking out the keyword of principal search
+    # Helper function to remove keyword from the tweets
     def remove_keyword(text, keyword):
         pattern = re.compile(re.escape(keyword), re.IGNORECASE)
         return pattern.sub('', text)
-
-    # Filtra las palabras positivas y negativas
+    
+    # Extract positive and negative tweets and remove the keyword
     positive_words = " ".join(df['Tweet'][df['Sentiment'] == 'Positive'])
     negative_words = " ".join(df['Tweet'][df['Sentiment'] == 'Negative'])
     
-    # Elimina la palabra clave ingresada por el usuario de los textos
     positive_words = remove_keyword(positive_words, keyword)
     negative_words = remove_keyword(negative_words, keyword)
 
-    wordcloud = WordCloud(width=875, height=900, background_color="lightgrey", max_words=50, min_font_size=20, random_state=42)\
-        .generate(positive_words)
+    # Generate word clouds for positive and negative words
+    wordcloud_positive = WordCloud(width=800, height=400, background_color="white").generate(positive_words)
+    wordcloud_negative = WordCloud(width=800, height=400, background_color="white").generate(negative_words)
     
-    wordcloud2 = WordCloud(width=875, height=900, background_color="black", max_words=50, min_font_size=20, random_state=42)\
-        .generate(negative_words)
+    # Convert word clouds to images
+    wordcloud_positive_image = wordcloud_positive.to_image()
+    wordcloud_negative_image = wordcloud_negative.to_image()
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(18, 9), facecolor=None)  # Changed to 2 rows, 1 column
-    ax1.imshow(wordcloud, interpolation='bilinear')
-    ax2.imshow(wordcloud2, interpolation='bilinear')
-    ax1.set_title('Positive Tweets', fontsize=20)
-    ax2.set_title('Negative Tweets', fontsize=20)
-    ax1.axis("off")
-    ax2.axis("off")
-    fig.tight_layout()
-    
-    st.pyplot(fig)  # don't take this out
+    # Convert images to array
+    positive_img_array = np.array(wordcloud_positive_image)
+    negative_img_array = np.array(wordcloud_negative_image)
+
+    # Create Plotly figures to display the word clouds
+    fig = go.Figure()
+
+    # Adding positive word cloud as an image
+    fig.add_trace(go.Image(z=positive_img_array))
+    fig.update_layout(
+        title_text="Positive Tweets Word Cloud",
+        title_x=0.5,
+        margin=dict(l=0, r=0, t=50, b=0),
+        height=400
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # Display the negative word cloud in a second figure
+    fig2 = go.Figure()
+    fig2.add_trace(go.Image(z=negative_img_array))
+    fig2.update_layout(
+        title_text="Negative Tweets Word Cloud",
+        title_x=0.5,
+        margin=dict(l=0, r=0, t=50, b=0),
+        height=400
+    )
+    st.plotly_chart(fig2, use_container_width=True)
     
 
 def sentiment_dist(df):
@@ -141,3 +163,5 @@ def sentiment_dist_plotly(df):
     
     # Mostrar el gráfico en Streamlit
     st.plotly_chart(fig, use_container_width=True)
+
+
