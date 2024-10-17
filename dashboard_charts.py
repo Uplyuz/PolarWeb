@@ -215,5 +215,4 @@ def create_banner(df):
     
     st.plotly_chart(fig)
 
-# Call the function with aux_02
-create_banner(aux_02)
+
