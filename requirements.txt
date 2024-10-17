@@ -7,3 +7,4 @@ deep-translator
 torch
 transformers
 seaborn
+plotly.express
