@@ -79,7 +79,7 @@ with tab1:
              ''')
     keyword = st.text_input("Enter a keyword to search tweets:", "Lebron")
     st.write(' ')
-    num_tweets = st.slider("Select the number of tweets to retrieve", 100, 1000, step=50)
+    num_tweets = st.slider("Select the number of tweets to retrieve", 1, 50, step=1)
     st.write(' ')
     option = st.radio('Tweet options', 
                    ('Latest', 'Top'), 
@@ -98,11 +98,13 @@ with tab1:
             st.session_state.search_done = True  # successful search
             # to pass the keyword to the API as the search phrase
             user_search_phrase = keyword  # User input from the search box
-            querystring = {"query": user_search_phrase, "section": option.lower(), "limit": '20'}  # Default filters (to be connected later with the st.slider and the st.radio)
+            querystring = {"query": user_search_phrase, "section": option.lower(), "limit": str(num_tweets)}  # Default filters (to be connected later with the st.slider and the st.radio)
             # calling the API
             try:
                 response_api_01 = requests.get(url_tweets_search_api_01, headers=headers, params=querystring)
                 response_api_01.raise_for_status()
+                entries_api_01 = response_api_01.json()
+                st.write(entries_api_01)
                 entries_api_01 = response_api_01.json()['data']['search_by_raw_query']['search_timeline']['timeline']['instructions'][0]['entries']
 
              # cleanning the API response data
