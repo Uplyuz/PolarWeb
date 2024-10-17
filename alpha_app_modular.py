@@ -82,7 +82,7 @@ with tab1:
              ''')
     keyword = st.text_input("Enter a keyword to search tweets:", "Lebron")
     st.write(' ')
-    num_tweets = st.slider("Select the number of tweets to retrieve", 1, 50, step=1)
+    num_tweets = st.slider("Select the number of tweets to retrieve", 20, 100, step=10)
     st.write(' ')
     option = st.radio('Tweet options', 
                    ('Latest', 'Top'), 

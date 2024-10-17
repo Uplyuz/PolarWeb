@@ -82,13 +82,32 @@ def sentiment_dist(df):
     
 
 def likes_over_words_amount(df):
-    plt.figure(figsize=(10, 6))
-    plt.scatter(df['Words_count'], df['Tweet_Likes'], alpha=0.5, color='green')
-    plt.title('Relationship Between Words in Tweets and Likes')
-    plt.xlabel('Amount of words')
-    plt.ylabel('Likes')
-    st.pyplot(plt, use_container_width=True)  
-    plt.clf() 
+    # Create a scatter plot with Plotly
+    fig = px.scatter(
+        df,
+        x='Words_count',  # X-axis will be the word count in the tweets
+        y='Tweet_Likes',  # Y-axis will represent the number of likes
+        size='Tweet_Likes',  # Size of the dots is proportional to the number of likes
+        color='Tweet_Likes',  # Color is also based on the likes, for visual effect
+        color_continuous_scale='Viridis',  # Using a professional continuous color scale
+        title='Relationship Between Words in Tweets and Likes',
+        labels={
+            'Words_count': 'Amount of Words',
+            'Tweet_Likes': 'Number of Likes'
+        },
+        hover_data={'Words_count': True, 'Tweet_Likes': True}  # Show additional information on hover
+    )
+    
+    # Customizing layout to enhance readability
+    fig.update_layout(
+        xaxis_title='Number of Words in Tweet',
+        yaxis_title='Likes on Tweet',
+        template='plotly_white',  # Use a clean white template for a professional look
+        height=600,  # Adjust height for better appearance
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+    # Display the plot in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
 def format_data_model_output(df):
     df_clean_data = df.copy()
@@ -144,8 +163,8 @@ def sentiment_dist_plotly(df):
                  y='Count', 
                  color='Sentiment', 
                  color_discrete_map={'Positive':'#2ECC71', 'Negative':'#E74C3C'},
-                 title="Distribución de Sentimientos en Tweets",
-                 labels={'Sentiment': 'Sentimiento', 'Count': 'Número de Tweets'},
+                 title="Distribution of Tweets Sentiment",
+                 labels={'Sentiment': 'Sentiment', 'Count': 'Number of Tweets'},
                  text='Count',
                  height=500)
 
