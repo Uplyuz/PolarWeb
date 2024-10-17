@@ -4,6 +4,7 @@ import streamlit as st  # Agregar esta línea
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import re
+import plotly.express as px
 
 # cloud charts (positive and negative sentiments)
 def plot_wordcloud(df, keyword):
@@ -104,3 +105,39 @@ def obtain_summary(df):
     df_results['Positive_ratio'] = positive_ratio
     summary = df_results.copy()
     return summary
+
+
+
+def sentiment_dist_plotly(df):
+    if 'Tweet' not in df.columns or 'Sentiment' not in df.columns:
+        raise ValueError("The DataFrame's structure is not correct.")
+    
+    # Conteo de los valores de Sentiment
+    sentiment_counts = df['Sentiment'].value_counts().reset_index()
+    sentiment_counts.columns = ['Sentiment', 'Count']
+
+    # Crear un gráfico de barras interactivo con Plotly
+    fig = px.bar(sentiment_counts, 
+                 x='Sentiment', 
+                 y='Count', 
+                 color='Sentiment', 
+                 color_discrete_map={'Positive':'#2ECC71', 'Negative':'#E74C3C'},
+                 title="Distribución de Sentimientos en Tweets",
+                 labels={'Sentiment': 'Sentimiento', 'Count': 'Número de Tweets'},
+                 text='Count',
+                 height=500)
+
+    # Actualizar el diseño del gráfico para una mejor presentación
+    fig.update_traces(textposition='outside', marker_line_width=2, marker_line_color='black')
+    fig.update_layout(
+        title_font_size=24,
+        title_x=0.5,
+        xaxis_title_font_size=18,
+        yaxis_title_font_size=18,
+        font=dict(family="Arial", size=14),
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis=dict(showgrid=True, gridwidth=0.5, gridcolor='lightgrey')
+    )
+    
+    # Mostrar el gráfico en Streamlit
+    st.plotly_chart(fig, use_container_width=True)

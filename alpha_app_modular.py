@@ -1,4 +1,5 @@
 ###Copy the code for safety, to avoid braking your work :D ###
+import plotly.express as px
 import streamlit as st
 import requests
 import pandas as pd
@@ -200,10 +201,10 @@ with tab3:
         # Displaying sentiment analysis results
         st.write("Sentiment Analysis Results:")
         
-        from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount
+        from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly
         aux_01 = format_data_model_output(df_clean_data) #chequear linea 208 y esta
         st.write(aux_01) #chequear
-        sentiment_dist(df_clean_data)
+        sentiment_dist_plotly(df_clean_data)
         total_tweets = len(df_clean_data)
         total_likes = df_clean_data['Tweet_Likes'].sum()
         st.write(f"Total Tweets Analyzed: {total_tweets}")
