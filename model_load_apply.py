@@ -36,7 +36,7 @@ def predict_sentiment(model, tokenizer, sentence):
     # No gradient calculation for inference
     with torch.no_grad():
         outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-        logits = outputs  # For custom model, it's just the logits
+        logits = outputs  
     
     # Get the predicted class (0 or 1)
     predictions = torch.argmax(logits, dim=1)

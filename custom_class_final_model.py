@@ -1,4 +1,3 @@
-# Note: This file only contains the class definition. To use it, you will import it in another script.
 
 import torch
 import torch.nn as nn
@@ -24,8 +23,8 @@ class CustomRobertaModel(nn.Module, PyTorchModelHubMixin):
         # Forward pass through Roberta model (get the hidden states)
         outputs = self.roberta.roberta(input_ids=input_ids, attention_mask=attention_mask, return_dict=True)
         
-        # Extract the [CLS] token's output (pooled output) from the last hidden state
-        pooled_output = outputs.last_hidden_state[:, 0]  # Use the hidden state for the [CLS] token
+        # Extract the [CLS] token's output 
+        pooled_output = outputs.last_hidden_state[:, 0]  # 
         
         # Pass through the additional layers
         x = self.relu(self.additional_layer_1(pooled_output))

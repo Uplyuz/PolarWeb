@@ -47,12 +47,12 @@ if model_custom is None or tokenizer_custom is None:
 def clean_entries_with_dates(list_of_elem):
     clean_data = []
     for element in list_of_elem:
-        content = element.get('content',[])                                                                             # para extraer el contenido de 'content'
-        item_content = content.get('itemContent',{})                                                                    # para extraer el contenido de 'itemContent'
-        if 'tweet_results' not in item_content or 'result' not in item_content['tweet_results'] : continue              # que siga de largo con este elemento si no tiene 'tweet_result' o 'result'
-        result = item_content['tweet_results']['result']                                                                # para extraer el contenido de 'tweet_results'
-        if 'legacy' not in result or 'full_text' not in result['legacy']: continue                                      # que siga de largo con este elemento si no tiene 'full_text' o 'legacy'
-        full_text = result['legacy']['full_text']                                                                       # para extraer el contenido de 'full_text'
+        content = element.get('content',[])                                                                             # extract 'content'
+        item_content = content.get('itemContent',{})                                                                    # extract'itemContent'
+        if 'tweet_results' not in item_content or 'result' not in item_content['tweet_results'] : continue              # keep searching if not found:'tweet_result' or 'result'
+        result = item_content['tweet_results']['result']                                                                # extract 'tweet_results'
+        if 'legacy' not in result or 'full_text' not in result['legacy']: continue                                      # keep searching if not found: 'full_text' o 'legacy'
+        full_text = result['legacy']['full_text']                                                                       # extract 'full_text'
         post_date = result['legacy']['created_at']
         likes = result['legacy']['favorite_count']
         clean_data.append((post_date, full_text, likes))
@@ -70,7 +70,7 @@ st.image(enlace_img, use_column_width=True)
 # header
 st.markdown("<p style='text-align: center; font-size:24px; font-monocode: bold;'>Tailored Sentiment Analysis at Your Fingertips</p>", unsafe_allow_html=True)
 
-# to create all tabs once
+#  create all tabs 
 tab1, tab2, tab3 = st.tabs(["Set-up your Search", "Get Data", "Get Analysis"])
 
 # tab1: search config
@@ -91,7 +91,7 @@ with tab1:
 
     # continue_disabled = not keyword.strip() a ver si la quito
     
-    # to start searching 
+    #  start searching 
     if st.button("Search"):
         if not keyword.strip():
             st.warning("You can't search with an empty keyword. Please enter a keyword")
@@ -130,7 +130,7 @@ with tab1:
         unsafe_allow_html=True
     )
             
-    # to display results if search was successful
+    #  display results if search was successful
     if st.session_state.search_done:
         df_clean_data=st.session_state.df_clean_data
         # Check dataframe not none and empty
@@ -193,7 +193,7 @@ with tab3:
         # Next steps, from now on, the code is to keep
         # Displaying sentiment analysis results
         st.write("Sentiment Analysis Results:")
-        aux_02 = obtain_summary(aux_01) #chequear
+        aux_02 = obtain_summary(aux_01) 
         create_banner(aux_01)
         sentiment_dist_plotly(df_clean_data)
         total_tweets = len(df_clean_data)

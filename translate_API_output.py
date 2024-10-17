@@ -25,7 +25,7 @@ def traducir_tweets(df):
 
 # df_prueba_roberta['tweets_traducidos'] = df_prueba_roberta['tweets'].apply(traducir)
 
-
+# function to clean tweet data (not for the model but for wordcloud)
 def preprocess_tweet(df):
     df['Tweet'] = df['Tweet'].apply(lambda x: re.sub(r'http\S+|www\S+|https\S+', '', x))  # delete URLs
     df['Tweet'] = df['Tweet'].apply(lambda x: re.sub(r'@\w+', '', x))  # delete mentions
