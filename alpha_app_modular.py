@@ -141,7 +141,9 @@ with tab1:
                 #st.write(f'Here you have a sample of your "{keyword}" tweets search')
                 #st.write(df_clean_data.head(5))
                 #st.write(' ')
-                st.success("Task completed! Please proceed to the 'Get Data' tab for raw data, or the 'Get Analysis' tab for a quick analysis of your results.")
+                st.success("Task completed!")
+                st.write("""Please proceed to the 'Get Data' tab to view the raw data, 
+                           or to the 'Get Analysis' tab for a quick analysis of your results.""")
                 
         else:
             st.warning("No tweets were found for the current search.")
@@ -197,8 +199,6 @@ with tab3:
         sentiment_dist_plotly(df_clean_data)
         total_tweets = len(df_clean_data)
         total_likes = df_clean_data['Tweet_Likes'].sum()
-        st.write(f"Total Tweets Analyzed: {total_tweets}")
-        st.write(f"Total Likes on Tweets: {total_likes}")
         plot_wordcloud(df_clean_data, keyword)
         likes_over_words_amount(aux_01)
         st.write(f"Summary: ")
