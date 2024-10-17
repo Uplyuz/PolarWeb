@@ -184,75 +184,67 @@ def sentiment_dist_plotly(df):
     st.plotly_chart(fig, use_container_width=True)
 
 
-
-def create_banner(aux_02):
-    # Ensure aux_02 is a DataFrame and not None
-    if aux_02 is None or aux_02.empty:
-        st.error("Data is not available.")
-        return
-
-    # Get metrics from aux_02 DataFrame
-    latest_date = aux_02['Date'].max().strftime('%Y-%m-%d')
-    total_tweets = aux_02['tweets_count'].sum()
-    avg_word_count = aux_02['Average_word_count'].mean()
-    positive_ratio = aux_02['Positive_ratio'].mean()
-
-    # Create Plotly cards (indicators) for each metric
+# Function to create a banner with key metrics from the DataFrame
+def create_banner(df):
+    # 1. Total Tweets
+    total_tweets = df.shape[0]
+    # 2. Average Likes per Tweet
+    avg_likes = df['Tweet_Likes'].mean()
+    # 3. Total Likes
+    total_likes = df['Tweet_Likes'].sum()
+    # 4. Positive Sentiment Ratio
+    positive_tweets = df[df['Sentiment'] == 'Positive'].shape[0]
+    positive_ratio = positive_tweets / total_tweets
+    # 5. Average Words per Tweet
+    avg_words = df['Words_count'].mean()
+    # Create the indicators using Plotly's go.Indicator
     fig = go.Figure()
-
     # Total Tweets
     fig.add_trace(go.Indicator(
         mode="number",
         value=total_tweets,
-        title={"text": "<b>Total Tweets</b><br>Past Days"},
-        domain={'x': [0, 0.2], 'y': [0, 1]},
-        number={'font': {'size': 50}}
+        title={"text": "Total Tweets"},
+        domain={'row': 0, 'column': 0}  # Positioning in the grid
     ))
-
+    # Average Likes per Tweet
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=avg_likes,
+        title={"text": "Avg Likes per Tweet"},
+        number={"valueformat": ".0f"},  # No decimals for likes
+        domain={'row': 0, 'column': 1}
+    ))
+    # Total Likes
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=total_likes,
+        title={"text": "Total Likes"},
+        number={"valueformat": ".0f"},  # No decimals for total likes
+        domain={'row': 0, 'column': 2}
+    ))
+    # Positive Sentiment Ratio (shown as a percentage)
+    fig.add_trace(go.Indicator(
+        mode="gauge+number",
+        value=positive_ratio * 100,
+        title={"text": "Positive Sentiment %"},
+        gauge={'axis': {'range': [0, 100]}},
+        number={"valueformat": ".1f"},
+        domain={'row': 0, 'column': 3}
+    ))
     # Average Words per Tweet
     fig.add_trace(go.Indicator(
         mode="number",
-        value=avg_word_count,
-        title={"text": "<b>Avg. Word Count</b><br>Words per Tweet"},
-        domain={'x': [0.2, 0.4], 'y': [0, 1]},
-        number={'font': {'size': 50}}
+        value=avg_words,
+        title={"text": "Avg Words per Tweet"},
+        number={"valueformat": ".1f"},  # Keep one decimal for word count
+        domain={'row': 0, 'column': 4}
     ))
-
-    # Positive Sentiment Ratio
-    fig.add_trace(go.Indicator(
-        mode="number+gauge",
-        value=positive_ratio,
-        gauge={'shape': "bullet", 'axis': {'range': [0, 1]}, 'bar': {'color': "green"}},
-        title={"text": "<b>Positive Sentiment</b><br>Ratio"},
-        domain={'x': [0.4, 0.6], 'y': [0, 1]},
-        number={'font': {'size': 50}},
-    ))
-
-    # Latest Date
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=aux_02['Date'].max().day,
-        title={"text": f"<b>Latest Date</b><br>{latest_date}"},
-        domain={'x': [0.6, 0.8], 'y': [0, 1]},
-        number={'font': {'size': 50}}
-    ))
-
-    # Total Rows/Records
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=len(aux_02),
-        title={"text": "<b>Records</b><br>In DataFrame"},
-        domain={'x': [0.8, 1], 'y': [0, 1]},
-        number={'font': {'size': 50}},
-    ))
-
-    # Update layout for a professional look
+    # Set layout for better presentation (5 columns in a row)
     fig.update_layout(
         grid={'rows': 1, 'columns': 5, 'pattern': "independent"},
-        template='plotly_dark',
-        height=300,
-        margin=dict(l=20, r=20, t=50, b=50),
+        template="plotly_dark",
+        margin=dict(l=20, r=20, t=20, b=20)  # Adjust margins for better spacing
     )
-
-    # Display the figure in Streamlit
+    # Display the chart in Streamlit
     st.plotly_chart(fig, use_container_width=True)
+
