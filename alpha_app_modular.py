@@ -203,7 +203,7 @@ with tab3:
         # Displaying sentiment analysis results
         st.write("Sentiment Analysis Results:")
         
-        from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly
+        from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly, create_banner
         aux_01 = format_data_model_output(df_clean_data) #chequear linea 208 y esta
         st.write(aux_01) #chequear
         aux_02 = obtain_summary(aux_01) #chequear
