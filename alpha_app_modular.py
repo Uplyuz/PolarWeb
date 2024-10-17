@@ -1,4 +1,3 @@
-###Copy the code for safety, to avoid braking your work :D ###
 import plotly.express as px
 import streamlit as st
 import requests
@@ -18,6 +17,20 @@ from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_o
 import plotly.graph_objects as go
 from PIL import Image
 import numpy as np
+
+# To fix the tab headr
+st.markdown("""
+    <style>
+    .stTabs [data-baseweb="tab-list"] {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 999;
+        border-bottom: 2px solid black;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # API configuration
 url_tweets_search_api_01 = "https://twitter-x.p.rapidapi.com/search/"
@@ -41,7 +54,6 @@ model_custom, tokenizer_custom = get_model_and_tokenizer()
 # Check if the model was loaded successfully, otherwise exit
 if model_custom is None or tokenizer_custom is None:
         st.stop()  # Stop the app if the model couldn't be loaded
-
 
 
 # Function to clean the entries and extract date and text
@@ -77,7 +89,6 @@ tab1, tab2, tab3 = st.tabs(["Set-up your Search", "Get Data", "Get Analysis"])
 # tab1: search config
 with tab1:
     st.markdown("<p style='text-align: center; font-size:20px; font-monocode: bold;'>Set up your search</p>", unsafe_allow_html=True)
-    # to show disclaimer
     st.write('''
              
              ''')
@@ -94,11 +105,11 @@ with tab1:
     # continue_disabled = not keyword.strip() a ver si la quito
     
     # to start searching 
-    if st.button("Continue"):
+    if st.button("Search"):
         if not keyword.strip():
             st.warning("You can't search with an empty keyword. Please enter a keyword")
         else:
-            # statement of actions to complete at the momento client click con button 'continue'
+            # statement of actions to complete at the momento client click con button 'search'
             st.session_state.search_done = True  # successful search
             # to pass the keyword to the API as the search phrase
             user_search_phrase = keyword  # User input from the search box
@@ -140,8 +151,9 @@ with tab1:
             if keyword.strip():
                 #st.write(f'Here you have a sample of your "{keyword}" tweets search')
                 #st.write(df_clean_data.head(5))
-                #st.write(' ')
+                st.write(' ')
                 st.success("Task completed!")
+                st.write(' ')
                 st.write("""Please proceed to the 'Get Data' tab to view the raw data, 
                            or to the 'Get Analysis' tab for a quick analysis of your results.""")
                 
