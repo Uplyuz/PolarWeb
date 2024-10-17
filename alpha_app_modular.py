@@ -21,8 +21,8 @@ import numpy as np
 # To fix the tab headr
 st.markdown("""
     <style>
-    /* To ensure the tabs header stays sticky */
-    .stTabs [role="tablist"] {
+    /* Sticky tabs header */
+    div[data-testid="stHorizontalBlock"] {
         position: -webkit-sticky;
         position: sticky;
         top: 0;
