@@ -7,7 +7,6 @@ deep-translator
 torch
 transformers
 seaborn
-plotly.express
-plotly.graph_objects
+plotly
 PIL
 numpy
