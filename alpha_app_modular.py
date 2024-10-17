@@ -206,6 +206,8 @@ with tab3:
         from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly
         aux_01 = format_data_model_output(df_clean_data) #chequear linea 208 y esta
         st.write(aux_01) #chequear
+        aux_02 = obtain_summary(aux_01) #chequear
+        create_banner(aux_02)
         sentiment_dist_plotly(df_clean_data)
         total_tweets = len(df_clean_data)
         total_likes = df_clean_data['Tweet_Likes'].sum()
@@ -213,7 +215,6 @@ with tab3:
         st.write(f"Total Likes on Tweets: {total_likes}")
         plot_wordcloud(df_clean_data, keyword)
         likes_over_words_amount(aux_01)
-        aux_02 = obtain_summary(aux_01) #chequear
         st.write(f"Summary: ")
         st.write(aux_02)    
     else:

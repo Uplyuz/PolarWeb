@@ -184,3 +184,72 @@ def sentiment_dist_plotly(df):
     st.plotly_chart(fig, use_container_width=True)
 
 
+# Function to create a banner with 5 tablets
+def create_banner(aux_02):
+    # Extract relevant columns from the dataframe
+    dates = aux_02['Date'].tolist()
+    tweet_counts = aux_02['Tweets_count'].tolist()
+    avg_word_counts = aux_02['Average_word_count'].tolist()
+    positive_ratios = aux_02['Positive_ratio'].tolist()
+    
+    # Create 5 tablets for each metric
+    fig = go.Figure()
+
+    # 1. Tablet for Date
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=len(dates),
+        title={"text": "Dates Captured"},
+        domain={'row': 0, 'column': 0},
+        number={"suffix": f" Dates"}
+    ))
+
+    # 2. Tablet for Total Tweets Count
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=sum(tweet_counts),
+        title={"text": "Total Tweets"},
+        domain={'row': 0, 'column': 1},
+        number={"suffix": f" Tweets"}
+    ))
+
+    # 3. Tablet for Average Word Count
+    avg_word_count_overall = sum(avg_word_counts) / len(avg_word_counts)
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=avg_word_count_overall,
+        title={"text": "Average Word Count"},
+        domain={'row': 0, 'column': 2},
+        number={"suffix": " Words"}
+    ))
+
+    # 4. Tablet for Maximum Positive Ratio
+    max_positive_ratio = max(positive_ratios)
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=max_positive_ratio,
+        title={"text": "Max Positive Ratio"},
+        domain={'row': 0, 'column': 3},
+        number={"suffix": " %"}
+    ))
+
+    # 5. Tablet for Average Positive Ratio
+    avg_positive_ratio = sum(positive_ratios) / len(positive_ratios)
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=avg_positive_ratio,
+        title={"text": "Average Positive Ratio"},
+        domain={'row': 0, 'column': 4},
+        number={"suffix": " %"}
+    ))
+
+    # Customize layout for better appearance
+    fig.update_layout(
+        grid={'rows': 1, 'columns': 5, 'pattern': "independent"},
+        template='plotly_dark',  # Professional theme
+        height=200,  # Height of the banner
+        margin=dict(l=20, r=20, t=20, b=20),  # Margins for better space management
+    )
+
+    # Display the plot in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
