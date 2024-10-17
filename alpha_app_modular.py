@@ -207,6 +207,7 @@ with tab3:
         aux_01 = format_data_model_output(df_clean_data) #chequear linea 208 y esta
         st.write(aux_01) #chequear
         aux_02 = obtain_summary(aux_01) #chequear
+        st.write(aux_02)  
         create_banner(aux_02)
         sentiment_dist_plotly(df_clean_data)
         total_tweets = len(df_clean_data)
