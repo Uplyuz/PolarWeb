@@ -192,35 +192,47 @@ def create_banner(df):
     positive_sentiment = (df['Sentiment'] == 'Positive').mean() * 100
     avg_words_per_tweet = df['Words_count'].mean()
 
-    # Create the layout in two columns
-    col1, col2 = st.columns(2)
+    # Create a layout with two rows
+    st.write("<div style='text-align: center;'>", unsafe_allow_html=True)
+    
+    # First row: displaying four metrics
+    col1, col2, col3, col4 = st.columns(4)
 
-    # Display metrics in the first column
     with col1:
         st.metric("Total Tweets", total_tweets)
+    
+    with col2:
         st.metric("Total Likes", total_likes)
+    
+    with col3:
         st.metric("Avg Likes per Tweet", round(avg_likes_per_tweet, 2))
     
-    # Display gauge for Positive Sentiment % in the second column
-    with col2:
+    with col4:
         st.metric("Avg Words per Tweet", round(avg_words_per_tweet, 2))
-        
-        # Create the Plotly gauge
-        fig = go.Figure(go.Indicator(
-            mode="gauge+number",
-            value=positive_sentiment,
-            title={'text': "Positive Sentiment %"},
-            gauge={
-                'axis': {'range': [0, 100], 'tickcolor': "black"},
-                'bar': {'color': "green"},
-                'bgcolor': "white",
-                'steps': [
-                    {'range': [0, 50], 'color': "red"},
-                    {'range': [50, 100], 'color': "lightgreen"}],
-                'threshold': {
-                    'line': {'color': "black", 'width': 4},
-                    'thickness': 0.75,
-                    'value': 50}}))
-        
-        # Show the gauge
-        st.plotly_chart(fig, use_container_width=True)
+
+    st.write("</div>", unsafe_allow_html=True)
+
+    # Second row: displaying the gauge for Positive Sentiment %
+    st.write("<div style='text-align: center;'>", unsafe_allow_html=True)
+    
+    # Create the Plotly gauge
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=positive_sentiment,
+        title={'text': "Positive Sentiment %"},
+        gauge={
+            'axis': {'range': [0, 100], 'tickcolor': "black"},
+            'bar': {'color': "green"},
+            'bgcolor': "white",
+            'steps': [
+                {'range': [0, 50], 'color': "red"},
+                {'range': [50, 100], 'color': "lightgreen"}],
+            'threshold': {
+                'line': {'color': "black", 'width': 4},
+                'thickness': 0.75,
+                'value': 50}}))
+    
+    # Show the gauge centered
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.write("</div>", unsafe_allow_html=True)
