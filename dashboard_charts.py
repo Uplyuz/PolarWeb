@@ -183,36 +183,58 @@ def sentiment_dist_plotly(df):
     # Mostrar el gráfico en Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
-
+# Function to create a card
 def create_banner(df):
-    # Check if necessary columns are present
-    if 'Date' not in df.columns or 'tweets_count' not in df.columns or 'Average_word_count' not in df.columns or 'Positive_ratio' not in df.columns:
-        st.error("DataFrame does not have the required columns.")
-        return
+    fig = go.Figure()
 
-    # Debugging - Check the contents of the DataFrame
-    st.write("Inside create_banner function:", df)
+    # Create individual cards for each metric in df
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=df['tweets_count'][0],
+        title={"text": f"<b>Tweets on {df['Date'][0]}</b><br><span style='color:gray;font-size:0.8em'>Total Tweets</span>"},
+        domain={'x': [0, 0.2], 'y': [0.8, 1]}
+    ))
 
-    # Prepare the data for each 'tablet'
-    tablet_1 = f"Date: {df['Date'].iloc[0]}"
-    tablet_2 = f"Tweets: {df['tweets_count'].sum()}"
-    tablet_3 = f"Average Words: {df['Average_word_count'].mean():.2f}"
-    tablet_4 = f"Positive Ratio: {df['Positive_ratio'].mean():.2f}"
-    tablet_5 = f"Max Positive Ratio: {df['Positive_ratio'].max()}"
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=df['Average_word_count'][0],
+        title={"text": "<b>Average Word Count</b><br><span style='color:gray;font-size:0.8em'>Words per Tweet</span>"},
+        domain={'x': [0.2, 0.4], 'y': [0.8, 1]}
+    ))
 
-    # Create the plotly banner (table-like display)
-    fig = go.Figure(data=[go.Table(
-        header=dict(values=['Metric', 'Value'],
-                    fill_color='paleturquoise',
-                    align='left'),
-        cells=dict(values=[['Date', 'Total Tweets', 'Average Words', 'Positive Ratio', 'Max Positive Ratio'],
-                           [tablet_1, tablet_2, tablet_3, tablet_4, tablet_5]],
-                   fill_color='lavender',
-                   align='left'))
-    ])
-    
-    fig.update_layout(width=700, height=300, margin=dict(l=20, r=20, t=20, b=20))
-    
+    fig.add_trace(go.Indicator(
+        mode="number+gauge+delta",
+        value=df['Positive_ratio'][0],
+        title={"text": "<b>Positive Sentiment</b><br><span style='color:gray;font-size:0.8em'>Ratio</span>"},
+        gauge={
+            'shape': 'bullet',
+            'axis': {'range': [0, 1]},
+            'threshold': {'line': {'color': "green", 'width': 2}, 'thickness': 0.75, 'value': df['Positive_ratio'][0]}
+        },
+        domain={'x': [0.4, 0.6], 'y': [0.8, 1]}
+    ))
+
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=df['tweets_count'][1],
+        title={"text": f"<b>Tweets on {df['Date'][1]}</b><br><span style='color:gray;font-size:0.8em'>Total Tweets</span>"},
+        domain={'x': [0, 0.2], 'y': [0.6, 0.8]}
+    ))
+
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=df['Average_word_count'][1],
+        title={"text": "<b>Average Word Count</b><br><span style='color:gray;font-size:0.8em'>Words per Tweet</span>"},
+        domain={'x': [0.2, 0.4], 'y': [0.6, 0.8]}
+    ))
+
+    # Update layout for background, spacing, etc.
+    fig.update_layout(
+        grid={'rows': 2, 'columns': 3, 'pattern': "independent"},
+        margin={'l': 50, 'r': 50, 't': 50, 'b': 50},
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)"
+    )
+
+    # Display plotly figure in Streamlit
     st.plotly_chart(fig)
-
-
