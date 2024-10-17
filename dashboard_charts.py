@@ -200,13 +200,27 @@ def create_banner(df):
         st.metric("Total Tweets", total_tweets)
         st.metric("Total Likes", total_likes)
         st.metric("Avg Likes per Tweet", round(avg_likes_per_tweet, 2))
-
+    
     # Display gauge for Positive Sentiment % in the second column
     with col2:
         st.metric("Avg Words per Tweet", round(avg_words_per_tweet, 2))
-
-        # Adding the gauge for Positive Sentiment
-        gauge_value = round(positive_sentiment, 2)
-        st.write("Positive Sentiment %")
-        st.write(f"<h1 style='text-align: center; color: green;'>{gauge_value}%</h1>", unsafe_allow_html=True)
-        st.progress(gauge_value / 100)  # This creates a progress bar as a gauge
+        
+        # Create the Plotly gauge
+        fig = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=positive_sentiment,
+            title={'text': "Positive Sentiment %"},
+            gauge={
+                'axis': {'range': [0, 100], 'tickcolor': "black"},
+                'bar': {'color': "green"},
+                'bgcolor': "white",
+                'steps': [
+                    {'range': [0, 50], 'color': "red"},
+                    {'range': [50, 100], 'color': "lightgreen"}],
+                'threshold': {
+                    'line': {'color': "black", 'width': 4},
+                    'thickness': 0.75,
+                    'value': 50}}))
+        
+        # Show the gauge
+        st.plotly_chart(fig, use_container_width=True)
