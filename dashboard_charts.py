@@ -183,58 +183,65 @@ def sentiment_dist_plotly(df):
     # Mostrar el gráfico en Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
-# Function to create a card
-def create_banner(df):
+
+
+def create_banner(aux_02):
+    # Create individual metrics for each column from aux_02
+    date_text = f"Tweets on {aux_02['Date'].max().strftime('%Y-%m-%d')}"
+    total_tweets = aux_02['tweets_count'].sum()
+    avg_word_count = aux_02['Average_word_count'].mean()
+    positive_ratio = aux_02['Positive_ratio'].mean()
+
+    # Create Plotly cards for each metric
     fig = go.Figure()
 
-    # Create individual cards for each metric in df
+    # First metric: Total Tweets
     fig.add_trace(go.Indicator(
         mode="number",
-        value=df['tweets_count'][0],
-        title={"text": f"<b>Tweets on {df['Date'][0]}</b><br><span style='color:gray;font-size:0.8em'>Total Tweets</span>"},
-        domain={'x': [0, 0.2], 'y': [0.8, 1]}
+        value=total_tweets,
+        title={"text": "<b>Total Tweets</b><br>Past Days"},
+        domain={'x': [0, 0.2], 'y': [0, 1]},
+        number={'font': {'size': 50}}
     ))
 
+    # Second metric: Average Words per Tweet
     fig.add_trace(go.Indicator(
         mode="number",
-        value=df['Average_word_count'][0],
-        title={"text": "<b>Average Word Count</b><br><span style='color:gray;font-size:0.8em'>Words per Tweet</span>"},
-        domain={'x': [0.2, 0.4], 'y': [0.8, 1]}
+        value=avg_word_count,
+        title={"text": "<b>Avg. Word Count</b><br>Words per Tweet"},
+        domain={'x': [0.2, 0.4], 'y': [0, 1]},
+        number={'font': {'size': 50}}
     ))
 
+    # Third metric: Positive Sentiment Ratio
     fig.add_trace(go.Indicator(
-        mode="number+gauge+delta",
-        value=df['Positive_ratio'][0],
-        title={"text": "<b>Positive Sentiment</b><br><span style='color:gray;font-size:0.8em'>Ratio</span>"},
-        gauge={
-            'shape': 'bullet',
-            'axis': {'range': [0, 1]},
-            'threshold': {'line': {'color': "green", 'width': 2}, 'thickness': 0.75, 'value': df['Positive_ratio'][0]}
-        },
-        domain={'x': [0.4, 0.6], 'y': [0.8, 1]}
+        mode="number+gauge",
+        value=positive_ratio,
+        gauge={'shape': "bullet", 'axis': {'range': [0, 1]}, 'bar': {'color': "green"}},
+        title={"text": "<b>Positive Sentiment</b><br>Ratio"},
+        domain={'x': [0.4, 0.6], 'y': [0, 1]},
+        number={'font': {'size': 50}},
     ))
 
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=df['tweets_count'][1],
-        title={"text": f"<b>Tweets on {df['Date'][1]}</b><br><span style='color:gray;font-size:0.8em'>Total Tweets</span>"},
-        domain={'x': [0, 0.2], 'y': [0.6, 0.8]}
-    ))
-
+    # Fourth metric: Latest Date (formatted differently)
     fig.add_trace(go.Indicator(
         mode="number",
-        value=df['Average_word_count'][1],
-        title={"text": "<b>Average Word Count</b><br><span style='color:gray;font-size:0.8em'>Words per Tweet</span>"},
-        domain={'x': [0.2, 0.4], 'y': [0.6, 0.8]}
+        value=aux_02['Date'].max().day,
+        title={"text": f"<b>Latest Date</b><br>{aux_02['Date'].max().strftime('%Y-%m-%d')}"},
+        domain={'x': [0.6, 0.8], 'y': [0, 1]},
+        number={'font': {'size': 50}}
     ))
 
-    # Update layout for background, spacing, etc.
+    # Fifth metric: Placeholder or any other metric you'd like
+    fig.add_trace(go.Indicator(
+        mode="number",
+        value=aux_02['Positive_ratio'].count(),
+        title={"text": "<b>Records</b><br>In DataFrame"},
+        domain={'x': [0.8, 1], 'y': [0, 1]},
+        number={'font': {'size': 50}},
+    ))
+
+    # Update layout to make the panel responsive and attractive
     fig.update_layout(
-        grid={'rows': 2, 'columns': 3, 'pattern': "independent"},
-        margin={'l': 50, 'r': 50, 't': 50, 'b': 50},
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)"
-    )
-
-    # Display plotly figure in Streamlit
-    st.plotly_chart(fig)
+        grid={'rows': 1, 'columns': 5, 'pattern': "independent"},
+        template={'layout': {'paper_bgcolor': 'rgb
