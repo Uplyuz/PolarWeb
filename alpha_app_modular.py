@@ -21,7 +21,8 @@ import numpy as np
 # To fix the tab headr
 st.markdown("""
     <style>
-    .stTabs [data-baseweb="tab-list"] {
+    /* To ensure the tabs header stays sticky */
+    .stTabs [role="tablist"] {
         position: -webkit-sticky;
         position: sticky;
         top: 0;
@@ -29,6 +30,8 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
+
 
 # API configuration
 url_tweets_search_api_01 = "https://twitter-x.p.rapidapi.com/search/"
