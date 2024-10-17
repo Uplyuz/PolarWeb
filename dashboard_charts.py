@@ -185,66 +185,28 @@ def sentiment_dist_plotly(df):
 
 
 # Function to create a banner with key metrics from the DataFrame
+import streamlit as st
+import pandas as pd
+
 def create_banner(df):
-    # 1. Total Tweets
-    total_tweets = df.shape[0]
-    # 2. Average Likes per Tweet
-    avg_likes = df['Tweet_Likes'].mean()
-    # 3. Total Likes
+    # Calculate the required metrics from the DataFrame
+    total_tweets = df['Tweet'].count()
     total_likes = df['Tweet_Likes'].sum()
-    # 4. Positive Sentiment Ratio
-    positive_tweets = df[df['Sentiment'] == 'Positive'].shape[0]
-    positive_ratio = positive_tweets / total_tweets
-    # 5. Average Words per Tweet
-    avg_words = df['Words_count'].mean()
-    # Create the indicators using Plotly's go.Indicator
-    fig = go.Figure()
-    # Total Tweets
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=total_tweets,
-        title={"text": "Total Tweets"},
-        domain={'row': 0, 'column': 0}  # Positioning in the grid
-    ))
-    # Average Likes per Tweet
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=avg_likes,
-        title={"text": "Avg Likes per Tweet"},
-        number={"valueformat": ".0f"},  # No decimals for likes
-        domain={'row': 0, 'column': 1}
-    ))
-    # Total Likes
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=total_likes,
-        title={"text": "Total Likes"},
-        number={"valueformat": ".0f"},  # No decimals for total likes
-        domain={'row': 0, 'column': 2}
-    ))
-    # Positive Sentiment Ratio (shown as a percentage)
-    fig.add_trace(go.Indicator(
-        mode="gauge+number",
-        value=positive_ratio * 100,
-        title={"text": "Positive Sentiment %"},
-        gauge={'axis': {'range': [0, 100]}},
-        number={"valueformat": ".1f"},
-        domain={'row': 0, 'column': 3}
-    ))
-    # Average Words per Tweet
-    fig.add_trace(go.Indicator(
-        mode="number",
-        value=avg_words,
-        title={"text": "Avg Words per Tweet"},
-        number={"valueformat": ".1f"},  # Keep one decimal for word count
-        domain={'row': 0, 'column': 4}
-    ))
-    # Set layout for better presentation (5 columns in a row)
-    fig.update_layout(
-        grid={'rows': 1, 'columns': 5, 'pattern': "independent"},
-        template="plotly_dark",
-        margin=dict(l=20, r=20, t=20, b=20)  # Adjust margins for better spacing
-    )
-    # Display the chart in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+    avg_likes_per_tweet = total_likes / total_tweets if total_tweets > 0 else 0
+    positive_sentiment = (df['Sentiment'] == 'Positive').mean() * 100
+    avg_words_per_tweet = df['Words_count'].mean()
+
+    # Create the layout in two columns
+    col1, col2 = st.columns(2)
+
+    # Display metrics in the first column
+    with col1:
+        st.metric("Total Tweets", total_tweets)
+        st.metric("Total Likes", total_likes)
+        st.metric("Avg Likes per Tweet", round(avg_likes_per_tweet, 2))
+
+    # Display metrics in the second column
+    with col2:
+        st.metric("Positive Sentiment %", round(positive_sentiment, 2))
+        st.metric("Avg Words per Tweet", round(avg_words_per_tweet, 2))
 
