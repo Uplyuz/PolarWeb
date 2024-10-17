@@ -184,10 +184,6 @@ def sentiment_dist_plotly(df):
     st.plotly_chart(fig, use_container_width=True)
 
 
-# Function to create a banner with key metrics from the DataFrame
-import streamlit as st
-import pandas as pd
-
 def create_banner(df):
     # Calculate the required metrics from the DataFrame
     total_tweets = df['Tweet'].count()
@@ -205,8 +201,12 @@ def create_banner(df):
         st.metric("Total Likes", total_likes)
         st.metric("Avg Likes per Tweet", round(avg_likes_per_tweet, 2))
 
-    # Display metrics in the second column
+    # Display gauge for Positive Sentiment % in the second column
     with col2:
-        st.metric("Positive Sentiment %", round(positive_sentiment, 2))
         st.metric("Avg Words per Tweet", round(avg_words_per_tweet, 2))
 
+        # Adding the gauge for Positive Sentiment
+        gauge_value = round(positive_sentiment, 2)
+        st.write("Positive Sentiment %")
+        st.write(f"<h1 style='text-align: center; color: green;'>{gauge_value}%</h1>", unsafe_allow_html=True)
+        st.progress(gauge_value / 100)  # This creates a progress bar as a gauge
