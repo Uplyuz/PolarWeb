@@ -5,16 +5,16 @@
 App URL:   https://polarweb-huds7zhggkgsrmrgg2pnxu.streamlit.app/
 
 ##### POLAR WEB #####
-is an app that allows users to search for tweets from Twitter and perform sentiment analysis using a custom fine-tuned RoBERTa model. 
-The app retrieves tweets from the Twitter API based on user inputs, applies sentiment analysis, and provides data visualization features like word clouds and bar charts for sentiment breakdown.
+is an app that allows users to search for tweets on Twitter and perform sentiment analysis using a custom fine-tuned RoBERTa model. 
+The app retrieves tweets through the Twitter API based on user defined inputs, applies sentiment analysis, and provides data visualization features as word clouds and bar charts to display the sentiment breakdown.
 
 ###Features overview###
-Search Tweets: Allows users to search for tweets using a keyword or phrase.
-Customizable Search Options: Users can  filter tweets by "Top" or "Latest" (the slider to select the number of tweets is a work in progress feature at the moment, it is set as default to 20, and the usage is not recomended).
-Sentiment Analysis: A fine-tuned RoBERTa model (further details in model section) is applied to classify the sentiment of each tweet (Positive or Negative).
-Data Visualization: The app includes a bar chart showing sentiment distribution and word clouds for better insight into the tweets.
-Downloadable Dataset: Users can download the retrieved and analyzed tweet data as a CSV file.
-Language Translation: Tweets are translated to english as it is the default language the original and the fine tuned model were trained on. 
+Search Tweets: users can search for tweets using a keyword or phrase.
+Customizable Search Options: Users can filter tweets by "Top" or "Latest" (Note: the slider for selecting the number of tweets is currently set to a default of 20 and is still in development. Its usage is not recommended at this stage.).
+Sentiment Analysis: A fine-tuned RoBERTa model (detailed in the model section) is developed to classify the sentiment of each tweet as either Positive or Negative.
+Data Visualization: The app includes a dashboard for deeper insights into the tweets.
+Downloadable Dataset: Users can download the retrieved and analyzed tweet data as a CSV format file.
+Language Translation: Tweets are translated to english, as the original and fine-tuned model were trained ins this language. 
 
 ####App layout####
 
