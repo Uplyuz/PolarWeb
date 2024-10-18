@@ -28,41 +28,49 @@ def plot_wordcloud(df, keyword):
     positive_words = remove_keyword(positive_words, keyword)
     negative_words = remove_keyword(negative_words, keyword)
 
-    # Generate word clouds for positive and negative words
-    wordcloud_positive = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate(positive_words)
-    wordcloud_negative = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate(negative_words)
-    
-    # Convert word clouds to images
-    wordcloud_positive_image = wordcloud_positive.to_image()
-    wordcloud_negative_image = wordcloud_negative.to_image()
+    if positive_words.strip():
+        # Generate word clouds for positive and negative words
+        wordcloud_positive = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate(positive_words)
+        # Convert word clouds to images
+        wordcloud_positive_image = wordcloud_positive.to_image()
+        # Convert images to array
+        positive_img_array = np.array(wordcloud_positive_image)
 
-    # Convert images to array
-    positive_img_array = np.array(wordcloud_positive_image)
-    negative_img_array = np.array(wordcloud_negative_image)
+        # Create Plotly figures to display the word clouds
+        fig = go.Figure()
 
-    # Create Plotly figures to display the word clouds
-    fig = go.Figure()
+        # Adding positive word cloud as an image
+        fig.add_trace(go.Image(z=positive_img_array))
+        fig.update_layout(
+            title_text="Positive Tweets Word Cloud",
+            title_x=0,
+            margin=dict(l=0, r=0, t=50, b=0),
+            height=400
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.warning("No positive words were found.")
 
-    # Adding positive word cloud as an image
-    fig.add_trace(go.Image(z=positive_img_array))
-    fig.update_layout(
-        title_text="Positive Tweets Word Cloud",
-        title_x=0.5,
-        margin=dict(l=0, r=0, t=50, b=0),
-        height=400
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    if negative_words.strip():
+        wordcloud_negative = WordCloud(width=800, height=400, background_color="rgba(255, 255, 255, 0)", mode="RGBA").generate(negative_words)
+        # Convert word clouds to images
+        wordcloud_negative_image = wordcloud_negative.to_image()
+        # Convert images to array
+        negative_img_array = np.array(wordcloud_negative_image)
 
-    # Display the negative word cloud in a second figure
-    fig2 = go.Figure()
-    fig2.add_trace(go.Image(z=negative_img_array))
-    fig2.update_layout(
-        title_text="Negative Tweets Word Cloud",
-        title_x=0.5,
-        margin=dict(l=0, r=0, t=50, b=0),
-        height=400
-    )
-    st.plotly_chart(fig2, use_container_width=True)
+        # Display the negative word cloud in a second figure
+        fig2 = go.Figure()
+        fig2.add_trace(go.Image(z=negative_img_array))
+        fig2.update_layout(
+            title_text="Negative Tweets Word Cloud",
+            title_x=0,
+            margin=dict(l=0, r=0, t=50, b=0),
+            height=400
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+    else:
+        st.warning("No negative words were found.")
+
     
 
 def sentiment_dist(df):
@@ -172,7 +180,7 @@ def sentiment_dist_plotly(df):
     fig.update_traces(textposition='outside', marker_line_width=2, marker_line_color='black')
     fig.update_layout(
         title_font_size=24,
-        title_x=0.5,
+        title_x=0,
         xaxis_title_font_size=18,
         yaxis_title_font_size=18,
         font=dict(family="Arial", size=14),
