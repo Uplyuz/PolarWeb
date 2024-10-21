@@ -191,14 +191,25 @@ def sentiment_dist_plotly(df):
     # Mostrar el gráfico en Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
+def format_number(num):
+    if num >= 1_000_000:  # Si el número es un millón o más
+        return "{:.2f}M".format(num / 1_000_000)  # Dividimos por 1 millón y formateamos
+    elif num >= 1_000:  # Si el número es mil o más
+        return "{:.2f}K".format(num / 1_000)  # Dividimos por 1 mil y formateamos
+    else:
+        return "{:.2f}".format(num)  # Para números menores a mil, mostrar normal
 
 def create_banner(df):
-    # Calculate the required metrics from the DataFrame
+        # Calculate the required metrics from the DataFrame
     total_tweets = df['Tweet'].count()
     total_likes = df['Tweet_Likes'].sum()
+    total_likes_formatted = format_number(total_likes)
     avg_likes_per_tweet = total_likes / total_tweets if total_tweets > 0 else 0
+    avg_likes_per_tweet_formatted = format_number(avg_likes_per_tweet)
+
     positive_sentiment = (df['Sentiment'] == 'Positive').mean() * 100
     avg_words_per_tweet = df['Words_count'].mean()
+    avg_words_per_tweet_formatted = format_number(avg_words_per_tweet)
 
     # Create a layout with two rows
     st.write("<div style='text-align: center;'>", unsafe_allow_html=True)
@@ -210,13 +221,13 @@ def create_banner(df):
         st.metric("Total Tweets", total_tweets)
     
     with col2:
-        st.metric("Total Likes", total_likes)
+        st.metric("Total Likes", total_likes_formatted)
     
     with col3:
-        st.metric("Avg Likes per Tweet", round(avg_likes_per_tweet, 2))
+        st.metric("Avg Likes per Tweet", avg_likes_per_tweet_formatted)
     
     with col4:
-        st.metric("Avg Words per Tweet", round(avg_words_per_tweet, 2))
+        st.metric("Avg Words per Tweet", avg_words_per_tweet_formatted)
 
     st.write("</div>", unsafe_allow_html=True)
 
