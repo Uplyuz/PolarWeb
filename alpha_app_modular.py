@@ -17,12 +17,18 @@ from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_o
 import plotly.graph_objects as go
 from PIL import Image
 import numpy as np
+from api_handler import fetch_tweets_with_pagination, clean_entries_with_dates
+import toml
+import os
 
+    
+# Access secrets via Streamlit's st.secrets
+api_key = st.secrets["x-rapidapi-key"]
 
 # API configuration
 url_tweets_search_api_01 = "https://twitter-x.p.rapidapi.com/search/"
 headers = {
-    "x-rapidapi-key": "2e2c904e0cmshdbad92d97808688p1e798ajsna8b04a4dd68a", 
+    "x-rapidapi-key": api_key,  # Load API key from Streamlit secrets
     "x-rapidapi-host": "twitter-x.p.rapidapi.com"
 }
 
@@ -43,20 +49,6 @@ if model_custom is None or tokenizer_custom is None:
         st.stop()  # Stop the app if the model couldn't be loaded
 
 
-# Function to clean the entries and extract date and text
-def clean_entries_with_dates(list_of_elem):
-    clean_data = []
-    for element in list_of_elem:
-        content = element.get('content',[])                                                                             # extract 'content'
-        item_content = content.get('itemContent',{})                                                                    # extract'itemContent'
-        if 'tweet_results' not in item_content or 'result' not in item_content['tweet_results'] : continue              # keep searching if not found:'tweet_result' or 'result'
-        result = item_content['tweet_results']['result']                                                                # extract 'tweet_results'
-        if 'legacy' not in result or 'full_text' not in result['legacy']: continue                                      # keep searching if not found: 'full_text' o 'legacy'
-        full_text = result['legacy']['full_text']                                                                       # extract 'full_text'
-        post_date = result['legacy']['created_at']
-        likes = result['legacy']['favorite_count']
-        clean_data.append((post_date, full_text, likes))
-    return clean_data
 
 # to start session_state and state if the search is completed
 if 'search_done' not in st.session_state:
@@ -81,7 +73,17 @@ with tab1:
              ''')
     keyword = st.text_input("Enter a keyword to search tweets:", "ONU")
     st.write(' ')
-    num_tweets = st.slider("Select the number of tweets to retrieve", 20, 100, step=10)
+    num_tweets = st.slider("Select the number of tweets to retrieve", 10, 100, step=10)
+
+    st.markdown(
+        """
+        <div style="text-align: center; color: rgba(94, 255, 75, 0.8); font-size: 11px; font-family: monospace;">
+        Please note that fetching more tweets may result in longer wait times.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.write(' ')
     option = st.radio('Tweet options', 
                    ('Latest', 'Top'), 
@@ -96,35 +98,36 @@ with tab1:
         if not keyword.strip():
             st.warning("You can't search with an empty keyword. Please enter a keyword")
         else:
-            # statement of actions to complete at the momento client click con button 'search'
-            st.session_state.search_done = True  # successful search
-            # to pass the keyword to the API as the search phrase
+            st.session_state.search_done = True  # Successful search
             user_search_phrase = keyword  # User input from the search box
-            querystring = {"query": user_search_phrase, "section": option.lower(), "limit": '20'}  # Default filters (to be connected later with the st.slider and the st.radio)
-            # calling the API
+
+            # API query string with a constant limit of 20
+            querystring = {"query": user_search_phrase, "section": option.lower(), "limit": '25'}
+            
             try:
-                response_api_01 = requests.get(url_tweets_search_api_01, headers=headers, params=querystring)
-                response_api_01.raise_for_status()
-                entries_api_01 = response_api_01.json()['data']['search_by_raw_query']['search_timeline']['timeline']['instructions'][0]['entries']
+                # Use the pagination function to fetch tweets
+                max_tweets = num_tweets  # Set the limit based on user's slider input
+                tweets = fetch_tweets_with_pagination(url_tweets_search_api_01, querystring, headers, max_tweets)
 
-             # cleanning the API response data
-                clean_data = clean_entries_with_dates(entries_api_01)
+                # Convert fetched tweets to DataFrame
+                df_clean_data = pd.DataFrame(tweets, columns=['Date', 'Tweet', 'Tweet_Likes']) 
 
-                # converting the cleaned data into a DataFrame
-                df_clean_data = pd.DataFrame(clean_data, columns=['Date', 'Tweet', 'Tweet_Likes'])
-                df_clean_data = preprocess_tweet(df_clean_data) 
-                df_clean_data['Tweet']=df_clean_data['Tweet'].apply(traducir)
+                # Process and translate tweets
+                df_clean_data = preprocess_tweet(df_clean_data)
+                df_clean_data['Tweet'] = df_clean_data['Tweet'].apply(traducir)  # Translating tweet content
                 df_clean_data = df_clean_data.dropna(subset=['Tweet'])
                 df_clean_data = df_clean_data[df_clean_data['Tweet'].str.strip().astype(bool)]
-                st.session_state.df_clean_data=df_clean_data
+
+                # Store the cleaned data in session_state for further use
+                st.session_state.df_clean_data = df_clean_data
 
             except Exception as e:
                 st.error(f"An error occurred: {e}")
                 
     st.markdown(
         """
-        <div style="color: rgba(94, 255, 75, 0.8); font-size: 11px; font-family: monospace;">
-        ⚠️ This app uses a roBERTa fine tuned model, it may produce inaccurate results.
+        <div style="text-align: center; color: rgba(94, 255, 75, 0.8); font-size: 11px; font-family: monospace;">
+        ⚠️ This app uses a roBERTa fine-tuned model, it may produce inaccurate results. ⚠️
         </div>
         """,
         unsafe_allow_html=True
@@ -188,19 +191,23 @@ with tab3:
     st.subheader("Data Analysis")
     
     if st.session_state.search_done:
-        # Performing sentiment analysis on the cleaned data
-        # here go results from sentiment analysis, and delete this step code lines
-        # Next steps, from now on, the code is to keep
-        # Displaying sentiment analysis results
-        st.write("Sentiment Analysis Results:")
-        aux_02 = obtain_summary(aux_01) 
-        create_banner(aux_01)
-        sentiment_dist_plotly(df_clean_data)
-        total_tweets = len(df_clean_data)
-        total_likes = df_clean_data['Tweet_Likes'].sum()
-        plot_wordcloud(df_clean_data, keyword)
-        likes_over_words_amount(aux_01)
-        st.write(f"Summary: ")
-        st.write(aux_02)    
+        df_clean_data = st.session_state.df_clean_data
+        if df_clean_data is not None and not df_clean_data.empty:
+            
+            # Apply sentiment analysis and add the sentiment column
+            df_clean_data = analyze_sentiments(model_custom, tokenizer_custom, df_clean_data)
+            aux_01 = format_data_model_output(df_clean_data)  # Format data for dashboard
+            aux_02 = obtain_summary(aux_01)  # Obtain summary for reporting
+
+            # Perform analysis and visualization
+            create_banner(aux_01)  # Display key stats
+            sentiment_dist_plotly(df_clean_data)  # Sentiment distribution plot
+            plot_wordcloud(df_clean_data, keyword)  # Word clouds for positive and negative sentiments
+            likes_over_words_amount(aux_01)  # Scatter plot of likes vs. word count
+
+            st.write(f"Summary:")
+            st.write(aux_02)
+        else:
+            st.warning("No data available for analysis.")
     else:
-        st.warning('Perform a search in tab "Set-up your Search" to get a personalized data analysis.')
+        st.warning('Perform a search in the "Set-up your Search" tab to get a personalized data analysis.')
