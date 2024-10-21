@@ -2,7 +2,7 @@ import requests
 import time
 
 # Pagination function with API URL passed as a parameter
-def fetch_tweets_with_pagination(url, querystring, headers, max_tweets=100):
+def fetch_tweets_with_pagination(url, querystring, headers, max_tweets=50):
     all_entries = []
     page_number = 1
     last_timestamp = None
