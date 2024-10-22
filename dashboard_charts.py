@@ -42,7 +42,7 @@ def plot_wordcloud(df, keyword):
         # Adding positive word cloud as an image
         fig.add_trace(go.Image(z=positive_img_array))
         fig.update_layout(
-            title_text="Positive Tweets Word Cloud",
+            title_text="Positive Posts Words Cloud",
             title_x=0,
             margin=dict(l=0, r=0, t=50, b=0),
             height=400
@@ -62,7 +62,7 @@ def plot_wordcloud(df, keyword):
         fig2 = go.Figure()
         fig2.add_trace(go.Image(z=negative_img_array))
         fig2.update_layout(
-            title_text="Negative Tweets Word Cloud",
+            title_text="Negative Posts Words Cloud",
             title_x=0,
             margin=dict(l=0, r=0, t=50, b=0),
             height=400
@@ -98,7 +98,7 @@ def likes_over_words_amount(df):
         size='Tweet_Likes',  # Size of the dots is proportional to the number of likes
         color='Tweet_Likes',  # Color is also based on the likes, for visual effect
         color_continuous_scale='Viridis',  # Using a professional continuous color scale
-        title='Relationship Between Words in Tweets and Likes',
+        title='Relationship Between Words in Tweets/Threads and Likes',
         labels={
             'Words_count': 'Amount of Words',
             'Tweet_Likes': 'Number of Likes'
@@ -108,8 +108,8 @@ def likes_over_words_amount(df):
     
     # Customizing layout to enhance readability
     fig.update_layout(
-        xaxis_title='Number of Words in Tweet',
-        yaxis_title='Likes on Tweet',
+        xaxis_title='Number of Words in Posts',
+        yaxis_title='Likes on Posts',
         template='plotly_white',  # Use a clean white template for a professional look
         height=600,  # Adjust height for better appearance
         margin=dict(l=40, r=40, t=40, b=40)
@@ -141,14 +141,12 @@ def obtain_summary(df):
         # suma y conteo de words_count
         total_words = filtered_tweets['Words_count'].sum()      # somo los totales
         count_tweets = filtered_tweets['Words_count'].count()   # cuento por fecha
-        print(count_tweets)
-        average = total_words / count_tweets if count_tweets > 0 else 0  
+        average = round(total_words / count_tweets, 2) if count_tweets > 0 else 0  
         average_word_counts.append(average)
         # Positives count
         total_positives = (filtered_tweets['Sentiment']=='Positive').sum()  
-        print(total_positives)
         count_tweets = filtered_tweets['Sentiment'].count()  # total rows
-        ratio = total_positives / count_tweets 
+        ratio = round(total_positives / count_tweets , 2)
         positive_ratio.append(ratio)
     df_results['Average_word_count'] = average_word_counts
     df_results['Positive_ratio'] = positive_ratio
@@ -171,8 +169,8 @@ def sentiment_dist_plotly(df):
                  y='Count', 
                  color='Sentiment', 
                  color_discrete_map={'Positive':'#2ECC71', 'Negative':'#E74C3C'},
-                 title="Distribution of Tweets Sentiment",
-                 labels={'Sentiment': 'Sentiment', 'Count': 'Number of Tweets'},
+                 title="Distribution of Tweets/Threads Sentiment",
+                 labels={'Sentiment': 'Sentiment', 'Count': 'Number of Posts'},
                  text='Count',
                  height=500)
 

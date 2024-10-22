@@ -1,3 +1,4 @@
+
 import plotly.express as px
 import streamlit as st
 import requests
@@ -21,6 +22,17 @@ import numpy as np
 from api_handler import fetch_tweets_with_pagination, clean_entries_with_dates, extract_text_from_json_threads
 import toml
 import os
+
+#--------------------------------------------------------------------------------------------------------------------------
+import sys
+sys.exit("Ejecución detenida para pruebas.")
+
+# A partir de aquí, no se ejecutará nada
+print("Este código no se ejecutará.")
+
+
+
+#--------------------------------------------------------------------------------------------------------------------------
 
 # CSS sidebar
 st.markdown(
@@ -127,24 +139,21 @@ if first_level_tab == "Data Analysis":
                 user_search_phrase = keyword  # User input from the search box
                 # API query string with a constant limit of 20
                 querystring = {"query": user_search_phrase, "section": option.lower(), "limit": '50'}
-                querystring_threads = {"query":user_search_phrase, "section": option.lower(), "limit": '50'}
-                
-                # calling the API
+                querystring_threads = {"query":user_search_phrase, "limit": str(num_tweets)}
+                # calling APIs
                 try:
                     # Use the pagination function to fetch tweets
                     max_tweets = num_tweets  # Set the limit based on user's slider input
                     tweets = fetch_tweets_with_pagination(url_tweets_search_api_01, querystring, headers, max_tweets)
-                    print(tweets) ###########################################################################################
-                    if option == 'top':
-                        url_to_use = url_thread_top
+                    
+                    if option.lower() == 'top':
+                        url_to_use = url_thread_top 
                     else:
                         url_to_use = url_thread_latest
-                        
                     response_threads = requests.get(url_to_use, headers=headers_threads, params=querystring_threads)
                     json_data_threads = response_threads.json()
                     threads = extract_text_from_json_threads(json_data_threads)
-                    print(threads) ###########################################################################################
-
+                    
                     # Convert fetched tweets-threads to DataFrame
                     df_clean_tweets = pd.DataFrame(tweets, columns=['Date', 'Tweet', 'Tweet_Likes']) 
                     df_clean_tweets['SocialN'] = 'X'
