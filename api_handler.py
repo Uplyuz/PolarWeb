@@ -1,5 +1,6 @@
 import requests
 import time
+from datetime import datetime
 
 # Pagination function with API URL passed as a parameter
 def fetch_tweets_with_pagination(url, querystring, headers, max_tweets=50):
@@ -84,3 +85,37 @@ def clean_entries_with_dates(list_of_elem):
         clean_data.append((post_date, full_text, favorite_count))  # Add likes to the tuple
     
     return clean_data
+
+
+def extract_text_from_json_threads(json_data):
+    extracted_text = []
+    try:
+        # 'searchResults'
+        search_results = json_data['data']['searchResults']
+
+        # iteration over 'edges'
+        for edge in search_results.get('edges', []):
+            thread = edge.get('node', {}).get('thread', {})
+
+            # if 'thread_items', iterate
+            thread_items = thread.get('thread_items', [])
+            if not thread_items:
+                print("Warning: No 'thread_items' found in some thread.")
+                continue  # if not 'thread_items', go to nexct one
+
+            # iteration over 'thread_items'
+            for item in thread_items:
+                # extract 'post' text
+                post = item.get('post', {})
+
+                if 'caption' in post and 'text' in post['caption']:
+                    full_text = post['caption']['text']
+                    post_date = item['post']['taken_at']
+                    post_date = datetime.utcfromtimestamp(post_date).strftime('%a %b %d %H:%M:%S +0000 %Y')
+                    favorite_count = post.get('like_count', 0)
+                    extracted_text.append((post_date, full_text, favorite_count))
+
+    except KeyError as e:
+        print(f"Error: Key {str(e)} not found in JSON.")
+
+    return extracted_text
