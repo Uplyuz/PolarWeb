@@ -220,5 +220,70 @@ if first_level_tab == "Data Analysis":
 
 # The second top-level tab 'Heads Up'
 elif first_level_tab == "Heads Up":
-    st.subheader("Heads Up")
-    st.write("This is the second main tab.")
+    st.markdown("<p style='text-align: center; font-size:24px; font-monocode: bold;'>Heads UP!</p>", unsafe_allow_html=True)
+
+    st.markdown("<p style='text-align: center; font-size:20px; font-monocode: bold;'>Compare sentiment for two different keywords</p>", unsafe_allow_html=True)
+        
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        keyword1 = st.text_input("Enter first keyword to search tweets:", "Keyword 1")
+    with col2:
+        keyword2 = st.text_input("Enter second keyword to search tweets:", "Keyword 2")
+    
+    tweet_limit = 20
+    
+    if st.button("Compare"):
+        # Check if the keywords are valid
+        if not keyword1.strip() or not keyword2.strip():
+            st.warning("Please enter both keywords before comparing.")
+        else:
+            # Prepare query strings for each keyword
+            querystring1 = {"query": keyword1, "section": "latest", "limit": str(tweet_limit)}
+            querystring2 = {"query": keyword2, "section": "latest", "limit": str(tweet_limit)}
+            
+            try:
+                # Fetch tweets for each keyword using pagination function
+                tweets1 = fetch_tweets_with_pagination(url_tweets_search_api_01, querystring1, headers)
+                tweets2 = fetch_tweets_with_pagination(url_tweets_search_api_01, querystring2, headers)
+                
+                # Convert fetched tweets to DataFrames
+                search1 = pd.DataFrame(tweets1, columns=['Date', 'Tweet', 'Tweet_Likes'])
+                search2 = pd.DataFrame(tweets2, columns=['Date', 'Tweet', 'Tweet_Likes'])
+                
+                # Preprocess and translate tweets for each search
+                search1 = preprocess_tweet(search1)
+                search1['Tweet'] = search1['Tweet'].apply(traducir)
+                search1 = search1.dropna(subset=['Tweet'])
+                search1 = search1[search1['Tweet'].str.strip().astype(bool)]
+                
+                search2 = preprocess_tweet(search2)
+                search2['Tweet'] = search2['Tweet'].apply(traducir)
+                search2 = search2.dropna(subset=['Tweet'])
+                search2 = search2[search2['Tweet'].str.strip().astype(bool)]
+                
+                # Apply sentiment analysis using the model on both search results
+                search1 = analyze_sentiments(model_custom, tokenizer_custom, search1)
+                search2 = analyze_sentiments(model_custom, tokenizer_custom, search2)
+
+                # Format data to ensure all necessary columns like 'Words_count' are present
+                search1 = format_data_model_output(search1)  # Ensure all required columns are present
+                search2 = format_data_model_output(search2)  # Ensure all required columns are present
+                
+                st.success("Sentiment analysis completed for both keywords.")
+                
+                # Display results in two columns side by side
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown(f"### Results for **{keyword1}**")
+                    create_banner(search1)  # Display banner with key stats and gauge
+                    sentiment_dist_plotly(search1)  # Plot sentiment distribution
+                    
+                with col2:
+                    st.markdown(f"### Results for **{keyword2}**")
+                    create_banner(search2)  # Display banner with key stats and gauge
+                    sentiment_dist_plotly(search2)  # Plot sentiment distribution
+                
+            except Exception as e:
+                st.error(f"An error occurred during the comparison: {e}")
