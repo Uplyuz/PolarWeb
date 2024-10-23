@@ -256,3 +256,164 @@ def create_banner(df):
     st.plotly_chart(fig, use_container_width=True)
 
     st.write("</div>", unsafe_allow_html=True)
+
+
+#  plot the trend of positive and negative tweets for each search over time
+
+import plotly.express as px
+import plotly.graph_objects as go
+
+# Function to plot the trend of positive and negative tweets for each search over time
+def plot_sentiment_trend_over_time(df1, df2, keyword1, keyword2):
+    # Convert the 'Date' column to datetime (ensure it has both date and time)
+    df1['Date'] = pd.to_datetime(df1['Date'])
+    df2['Date'] = pd.to_datetime(df2['Date'])
+
+    # Create a column for the date-hour combination (to group by both day and hour)
+    df1['DateHour'] = df1['Date'].dt.floor('H')  # Floor to the nearest hour
+    df2['DateHour'] = df2['Date'].dt.floor('H')
+
+    # Group by the date-hour and sentiment for both datasets
+    df1_grouped = df1.groupby(['DateHour', 'Sentiment']).size().unstack(fill_value=0).reset_index()
+    df2_grouped = df2.groupby(['DateHour', 'Sentiment']).size().unstack(fill_value=0).reset_index()
+
+    # Add columns for missing sentiment categories (in case not every hour has both positive and negative tweets)
+    if 'Positive' not in df1_grouped:
+        df1_grouped['Positive'] = 0
+    if 'Negative' not in df1_grouped:
+        df1_grouped['Negative'] = 0
+    
+    if 'Positive' not in df2_grouped:
+        df2_grouped['Positive'] = 0
+    if 'Negative' not in df2_grouped:
+        df2_grouped['Negative'] = 0
+
+    # Prepare the data for plotting
+    df1_grouped['Keyword'] = keyword1  # Add keyword labels to distinguish between search 1 and 2
+    df2_grouped['Keyword'] = keyword2
+
+    # Rename the sentiment columns to show "Keyword: Positive/Negative"
+    df1_grouped.rename(columns={'Positive': f'{keyword1}: Positive', 'Negative': f'{keyword1}: Negative'}, inplace=True)
+    df2_grouped.rename(columns={'Positive': f'{keyword2}: Positive', 'Negative': f'{keyword2}: Negative'}, inplace=True)
+
+    # Combine both datasets
+    df_combined = pd.merge(df1_grouped[['DateHour', f'{keyword1}: Positive', f'{keyword1}: Negative']],
+                           df2_grouped[['DateHour', f'{keyword2}: Positive', f'{keyword2}: Negative']],
+                           on='DateHour', how='outer').fillna(0)  # Outer join to keep all hours, fill missing values with 0
+
+    # Sort by DateHour to ensure the plot is ordered chronologically
+    df_combined = df_combined.sort_values('DateHour')
+
+    # Define colors for the lines
+    colors = {
+        f'{keyword1}: Positive': 'lightgreen',
+        f'{keyword1}: Negative': 'lightcoral',
+        f'{keyword2}: Positive': 'darkgreen',
+        f'{keyword2}: Negative': 'darkred'
+    }
+
+    # Create the figure
+    fig = go.Figure()
+
+    # Add lines for each sentiment (positive/negative) for both searches
+    for column in [f'{keyword1}: Positive', f'{keyword1}: Negative', f'{keyword2}: Positive', f'{keyword2}: Negative']:
+        fig.add_trace(go.Scatter(
+            x=df_combined['DateHour'],
+            y=df_combined[column],
+            mode='lines',
+            name=column,
+            line=dict(color=colors[column], width=2)
+        ))
+
+    # Update layout
+    fig.update_layout(
+        title=f"Trend of Positive and Negative Tweets Over Time ({keyword1} vs {keyword2})",
+        xaxis_title="Time (Date and Hour)",
+        yaxis_title="Number of Tweets",
+        template='plotly_white',
+        height=600,
+        legend_title_text="Sentiment"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+# Population Pyramid Function
+
+def population_pyramid(df1, df2, keyword1, keyword2):
+    # Metrics for both tweets and likes
+    metrics = ['Positive Tweets', 'Negative Tweets', 'Total Likes on extracted Tweets', 'Avg Likes per Tweet', 
+               'Total Likes (Positive)', 'Total Likes (Negative)']
+    
+    # Data for both df1 and df2
+    data1 = [
+        (df1['Sentiment'] == 'Positive').sum(),
+        (df1['Sentiment'] == 'Negative').sum(),
+        df1['Tweet_Likes'].sum(),
+        df1['Tweet_Likes'].mean(),
+        df1[df1['Sentiment'] == 'Positive']['Tweet_Likes'].sum(),
+        df1[df1['Sentiment'] == 'Negative']['Tweet_Likes'].sum()
+    ]
+    data2 = [
+        (df2['Sentiment'] == 'Positive').sum(),
+        (df2['Sentiment'] == 'Negative').sum(),
+        df2['Tweet_Likes'].sum(),
+        df2['Tweet_Likes'].mean(),
+        df2[df2['Sentiment'] == 'Positive']['Tweet_Likes'].sum(),
+        df2[df2['Sentiment'] == 'Negative']['Tweet_Likes'].sum()
+    ]
+
+    # Convert the data into a DataFrame for easier manipulation
+    df_comparison = pd.DataFrame({
+        'Metric': metrics,
+        keyword1: data1,
+        keyword2: data2
+    })
+
+    # Apply normalization (log scaling) for each row separately
+    df_comparison[keyword1] = df_comparison[keyword1].apply(lambda x: np.log1p(x))  # log(1 + x)
+    df_comparison[keyword2] = df_comparison[keyword2].apply(lambda x: np.log1p(x))  # log(1 + x)
+
+    # Create the population pyramid
+    fig = go.Figure()
+
+    # Plot data for keyword1 on the left
+    fig.add_trace(go.Bar(
+        y=df_comparison['Metric'],
+        x=df_comparison[keyword1] * -1,  # Left side for keyword1 (negative values)
+        name=keyword1,
+        orientation='h',
+        marker_color='lightgreen',  # Use a tone of green
+        text=df_comparison[keyword1].apply(lambda x: f"{np.expm1(x):,.0f}"),  # Reverse log scale for display, without decimal places
+        textposition='inside'
+    ))
+
+    # Plot data for keyword2 on the right
+    fig.add_trace(go.Bar(
+        y=df_comparison['Metric'],
+        x=df_comparison[keyword2],  # Right side for keyword2 (positive values)
+        name=keyword2,
+        orientation='h',
+        marker_color='lightcoral',  # Use a tone of red
+        text=df_comparison[keyword2].apply(lambda x: f"{np.expm1(x):,.0f}"),  # Reverse log scale for display, without decimal places
+        textposition='inside'
+    ))
+
+    # Layout for the population pyramid
+    fig.update_layout(
+        title_text=f"Comparison of Positive/Negative Tweets and Likes - {keyword1} vs {keyword2}",
+        barmode='overlay',
+        template='plotly_white',
+        xaxis_title="Log Scaled Values",
+        yaxis_title="Metric",
+        height=500
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+

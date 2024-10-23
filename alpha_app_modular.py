@@ -14,7 +14,7 @@ import torch
 from transformers import RobertaTokenizer
 from custom_class_final_model import CustomRobertaModel
 from model_load_apply import load_custom_sentiment_model, predict_sentiment, analyze_sentiments
-from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly, create_banner, format_number
+from dashboard_charts import plot_wordcloud, sentiment_dist, format_data_model_output, obtain_summary, likes_over_words_amount, sentiment_dist_plotly, create_banner, format_number, plot_sentiment_trend_over_time, population_pyramid
 import plotly.graph_objects as go
 from PIL import Image
 import numpy as np
@@ -218,39 +218,54 @@ if first_level_tab == "Data Analysis":
             else:
                 st.warning('Perform a search in tab "Set-up your Search" to get a personalized data analysis.')
 
-# The second top-level tab 'Heads Up'
-elif first_level_tab == "Heads Up":
-    st.markdown("<p style='text-align: center; font-size:24px; font-monocode: bold;'>Heads UP!</p>", unsafe_allow_html=True)
+#  second top-level tab 'Heads Up'
 
-    st.markdown("<p style='text-align: center; font-size:20px; font-monocode: bold;'>Compare sentiment for two different keywords</p>", unsafe_allow_html=True)
-        
-    col1, col2 = st.columns(2)
+elif first_level_tab == "Heads Up":
+    st.markdown("<p style='text-align: center; color: rgba(94, 255, 75, 0.8); font-size:24px; font-monocode: bold;'>Heads UP!</p>", unsafe_allow_html=True)
+
+    st.markdown("<p style='text-align: center; font-size:20px; font-monocode: bold;'>Compare two keywords</p>", unsafe_allow_html=True)
+    
+    # Layout with 3 columns: search 1, button, search 2
+    col1, col_button, col2 = st.columns([2, 1, 2])
     
     with col1:
-        keyword1 = st.text_input("Enter first keyword to search tweets:", "Keyword 1")
+        keyword1 = st.text_input(" ", "Enter first keyword here")
     with col2:
-        keyword2 = st.text_input("Enter second keyword to search tweets:", "Keyword 2")
+        keyword2 = st.text_input(" ", "Enter second keyword here")
     
-    tweet_limit = 20
-    
-    if st.button("Compare"):
+    with col_button:
+#space to allign the button with searchwords
+        st.write('''               
+                 
+                ''')
+        st.write('''
+                
+                ''')
+        
+        compare_button_clicked = st.button("Compare")
+
+    if compare_button_clicked:
         # Check if the keywords are valid
         if not keyword1.strip() or not keyword2.strip():
             st.warning("Please enter both keywords before comparing.")
         else:
             # Prepare query strings for each keyword
-            querystring1 = {"query": keyword1, "section": "latest", "limit": str(tweet_limit)}
-            querystring2 = {"query": keyword2, "section": "latest", "limit": str(tweet_limit)}
+            querystring1 = {"query": keyword1, "section": "top", "limit": "50"}
+            querystring2 = {"query": keyword2, "section": "top", "limit": "50"}
             
             try:
                 # Fetch tweets for each keyword using pagination function
                 tweets1 = fetch_tweets_with_pagination(url_tweets_search_api_01, querystring1, headers)
                 tweets2 = fetch_tweets_with_pagination(url_tweets_search_api_01, querystring2, headers)
                 
-                # Convert fetched tweets to DataFrames
-                search1 = pd.DataFrame(tweets1, columns=['Date', 'Tweet', 'Tweet_Likes'])
-                search2 = pd.DataFrame(tweets2, columns=['Date', 'Tweet', 'Tweet_Likes'])
-                
+                # Convert fetched tweets to DataFrames and ensure 'created_at' field is used
+                search1 = pd.DataFrame(tweets1, columns=['created_at', 'Tweet', 'Tweet_Likes'])
+                search2 = pd.DataFrame(tweets2, columns=['created_at', 'Tweet', 'Tweet_Likes'])
+
+                # Convert 'created_at' to datetime
+                search1['Date'] = pd.to_datetime(search1['created_at'], format='%a %b %d %H:%M:%S %z %Y')
+                search2['Date'] = pd.to_datetime(search2['created_at'], format='%a %b %d %H:%M:%S %z %Y')
+
                 # Preprocess and translate tweets for each search
                 search1 = preprocess_tweet(search1)
                 search1['Tweet'] = search1['Tweet'].apply(traducir)
@@ -267,23 +282,27 @@ elif first_level_tab == "Heads Up":
                 search2 = analyze_sentiments(model_custom, tokenizer_custom, search2)
 
                 # Format data to ensure all necessary columns like 'Words_count' are present
-                search1 = format_data_model_output(search1)  # Ensure all required columns are present
-                search2 = format_data_model_output(search2)  # Ensure all required columns are present
+                search1 = format_data_model_output(search1)
+                search2 = format_data_model_output(search2)
                 
                 st.success("Sentiment analysis completed for both keywords.")
                 
-                # Display results in two columns side by side
-                col1, col2 = st.columns(2)
+                # Display the population pyramid
+                population_pyramid(search1, search2, keyword1, keyword2)
+
+                # Plot the trend of positive and negative tweets over time
+                plot_sentiment_trend_over_time(search1, search2, keyword1, keyword2)
+
+                # Display the data tables
+                st.write(f"Data for {keyword1}:")
+                st.dataframe(search1)
                 
-                with col1:
-                    st.markdown(f"### Results for **{keyword1}**")
-                    create_banner(search1)  # Display banner with key stats and gauge
-                    sentiment_dist_plotly(search1)  # Plot sentiment distribution
-                    
-                with col2:
-                    st.markdown(f"### Results for **{keyword2}**")
-                    create_banner(search2)  # Display banner with key stats and gauge
-                    sentiment_dist_plotly(search2)  # Plot sentiment distribution
+                st.write(f"Data for {keyword2}:")
+                st.dataframe(search2)
+
+
                 
             except Exception as e:
                 st.error(f"An error occurred during the comparison: {e}")
+
+
