@@ -258,10 +258,7 @@ def create_banner(df):
     st.write("</div>", unsafe_allow_html=True)
 
 
-#  plot the trend of positive and negative tweets for each search over time
 
-import plotly.express as px
-import plotly.graph_objects as go
 
 # Function to plot the trend of positive and negative tweets for each search over time
 def plot_sentiment_trend_over_time(df1, df2, keyword1, keyword2):
