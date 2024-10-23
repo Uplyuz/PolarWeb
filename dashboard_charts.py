@@ -127,6 +127,9 @@ def format_data_model_output(df):
     df_clean_data['Week'] = df_clean_data['Date'].dt.isocalendar().week
     df_clean_data['Date'] = df_clean_data['Date'].dt.date
     df_clean_data['Words_count'] = df_clean_data['Tweet'].str.split().apply(len)
+    #para arreglar el error
+    df_clean_data['Tweet_Likes'] = pd.to_numeric(df_clean_data['Tweet_Likes'], errors='coerce')
+    df_clean_data['Tweet_Likes'] = df_clean_data['Tweet_Likes'].fillna(0)
     return df_clean_data
 
 def obtain_summary(df):
