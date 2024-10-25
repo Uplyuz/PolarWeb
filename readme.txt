@@ -14,7 +14,8 @@ Customizable Search Options: Users can filter tweets by "Top" or "Latest"
 Sentiment Analysis: A fine-tuned RoBERTa model (detailed in the model section) is developed to classify the sentiment of each tweet as either Positive or Negative.
 Data Visualization: The app includes a dashboard for deeper insights into the tweets.
 Downloadable Dataset: Users can download the retrieved and analyzed tweet data as a CSV format file.
-Language Translation: Tweets are translated to english, as the original and fine-tuned model were trained ins this language. 
+Language Translation: Tweets are translated to english, as the original and fine-tuned model were trained ins this language.
+Heads up: A comparison between two searches.
 
 ####App layout####
 
