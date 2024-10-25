@@ -10,7 +10,7 @@ The app retrieves tweets through the Twitter API based on user defined inputs, a
 
 ###Features overview###
 Search Tweets: users can search for tweets using a keyword or phrase.
-Customizable Search Options: Users can filter tweets by "Top" or "Latest" (Note: the slider for selecting the number of tweets is currently set to a default of 20 and is still in development. Its usage is not recommended at this stage.).
+Customizable Search Options: Users can filter tweets by "Top" or "Latest" 
 Sentiment Analysis: A fine-tuned RoBERTa model (detailed in the model section) is developed to classify the sentiment of each tweet as either Positive or Negative.
 Data Visualization: The app includes a dashboard for deeper insights into the tweets.
 Downloadable Dataset: Users can download the retrieved and analyzed tweet data as a CSV format file.
@@ -26,16 +26,21 @@ Tweet Type: Choose between "Top" tweets or "Latest" tweets using radio buttons.
 Once the search is configured, the app retrieves tweets using X API and processes the response. 
 Users are informed of the number of tweets retrieved and prompted to move to the next tab for data analysis.
 
-2. Get Data
-This tab displays the retrieved tweets in a table format, with the following columns:
+Also in this tab, the retrieved tweets will be displayed in a table format, with the following columns:
 
 Date: The timestamp when the tweet was posted.
-Tweet: The full content of the tweet (translated if necessary).
+Tweet: The full content of the tweet (translated).
 Tweet_Likes: The number of likes the tweet received.
+SocialN: The social network in which the tweet was posted.
 Sentiment: The result of sentiment analysis (0 for Negative, 1 for Positive).
+Year: The year when the tweet was posted.
+Month: The month when the tweet was posted.
+Week: The week when the tweet was posted.
+Words_count: The number of word in the tweet.
+
 Users can download the dataset with sentiment analysis as a CSV file.
 
-3. Get Analysis
+2. Get Analysis
 The final tab provides detailed sentiment analysis and visualizations:
 
 
